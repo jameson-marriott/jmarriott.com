@@ -1,4 +1,4 @@
-baseurl = "https://www.jmarriott.com"
+baseurl = "https://jmarriott.com"
 title = "jmarriott.com"
 theme = "hugo-coder"
 languagecode = "en"
