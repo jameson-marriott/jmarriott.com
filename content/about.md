@@ -1,29 +1,11 @@
 +++
-title = "About Hugo"
+title = "About Me"
 slug = "about"
 +++
 
-Hugo is a static site engine written in Go.
+I am a Quality Control Manager at an Aerospace Deisgn and Manufacturing company called [RAM Company](https://ramcompany.com/) in St. George, Utah. I amanage a team of 15 inspectors and take care of APQP/PPAP requirements including FAIs. I graduated from [Brigham Young Univeristy](https://www.byu.edu/) with a BS in [Manufacturing Engineering Technology](https://met.et.byu.edu/). I am a [Certified Quality Process Analysit](https://asq.org/cert/quality-process-analyst) and am working towards becoming a [Certifeid Six Sigma Black Belt](https://asq.org/cert/six-sigma-black-belt) through the [ASQ](https://asq.org/). I enjoy playing with statistics/analysis in [R](https://www.r-project.org/) with [RStudio](https://www.rstudio.com/).
 
+I enjoy listening to audio books and podcasts. Some of my recent favorits are [Mindset by Carol Dweck](https://mindsetonline.com/index.html), [DataFramed by Hugo Bowne-Anderson](https://www.datacamp.com/community/podcast), and [The Secret History of the Future by Tom Standage and Seth Stevenson](https://slate.com/technology/secret-history-of-the-future).
 
-It makes use of a variety of open source projects including:
+I coded this website using the [blogdown](https://bookdown.org/yihui/blogdown/) package in R. It's based on the [Coder](https://github.com/luizdepra/hugo-coder) theme for [Hugo](http://gohugo.io/). I love the [tidyverse](https://www.tidyverse.org/), and frequently refer to [R for Data Science by Hadley Wickham](https://r4ds.had.co.nz/) and [Text Mining with Rby Julia Silge and David Robinson](https://www.tidytextmining.com/).
 
-* [Cobra](https://github.com/spf13/cobra)
-* [Viper](https://github.com/spf13/viper)
-* [J Walter Weatherman](https://github.com/spf13/jWalterWeatherman)
-* [Cast](https://github.com/spf13/cast)
-
-Learn more and contribute on [GitHub](https://github.com/spf13).
-
-## Setup
-
-Some fun facts about [Hugo](http://gohugo.io/):
-
-* Built in [Go](http://golang.org/)
-* Loosely inspired by [Jekyll](http://jekyllrb.com/)
-* Primarily developed by [spf13](http://spf13.com/) on the train while commuting to and from Manhattan.
-* Coded in [Vim](http://vim.org) using [spf13-vim](http://vim.spf13.com/)
-
-Have questions or suggestions? Feel free to [open an issue on GitHub](https://github.com/spf13/hugo/issues/new) or [ask me on Twitter](https://twitter.com/spf13).
-
-Thanks for reading!
