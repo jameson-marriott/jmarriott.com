@@ -35,25 +35,25 @@ pygmentscodefencesguesssyntax = true
 
 # Social links
 [[params.social]]
+    name = "LinkedIn"
+    icon = "fab fa-linkedin fa-2x"
+    weight = 1
+    url = "https://www.linkedin.com/in/jameson-marriott/"
+[[params.social]]
     name = "Github"
     icon = "fab fa-github fa-2x"
-    weight = 1
-    url = "https://github.com/johndoe/"
-[[params.social]]
-    name = "Gitlab"
-    icon = "fab fa-gitlab fa-2x"
     weight = 2
-    url = "https://gitlab.com/johndoe/"
+    url = "https://github.com/jameson-marriott/"
+#[[params.social]]
+#    name = "Gitlab"
+#    icon = "fab fa-gitlab fa-2x"
+#    weight = 3
+#    url = "https://gitlab.com/johndoe/"
 #[/[params.social]]
 #    name = "Twitter"
 #    icon = "fab fa-twitter fa-2x"
 #    weight = 3
 #    url = "https://twitter.com/johndoe/"
-[[params.social]]
-    name = "LinkedIn"
-    icon = "fab fa-linkedin fa-2x"
-    weight = 3
-    url = "https://www.linkedin.com/in/jameson-marriott/"
 
 # Menu links
 [[menu.main]]
