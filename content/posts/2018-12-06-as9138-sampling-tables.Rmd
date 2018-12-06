@@ -1,0 +1,12 @@
+---
+title: "AS9138 Sampling Tables"
+author: "Jameson Marriott"
+date: "2018-12-06"
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+    dev: "svg"
+---
+
+AS9138 Quality Management Systems Statistical Product Acceptance Requirements provides new guidance on inspection samplings for accepting and rejecting product that replaces the old [MIL-STD-105](https://en.wikipedia.org/wiki/MIL-STD-105) sample plans. 
