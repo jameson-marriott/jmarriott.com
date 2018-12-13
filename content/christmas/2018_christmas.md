@@ -1,6 +1,6 @@
 +++
 title = "Christmas Newsletter"
-slug = "Christmas"
+slug = "2018 Christmas"
 date = "2018-12-25"
 +++
 
