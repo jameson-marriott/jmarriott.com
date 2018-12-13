@@ -10,4 +10,4 @@ date = "2018-12-25"
 
 
 
-<img src="static/images/christmas_pic.jpg" alt="2018 Christmas Picture" width="80%" height="auto"/>
+<img src="images/christmas_pic.jpg" alt="2018 Christmas Picture" width="80%" height="auto"/>
