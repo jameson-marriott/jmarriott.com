@@ -7,8 +7,13 @@ output:
     toc: true
     fig_width: 6
     dev: "svg"
+draft: TRUE
 ---
 
 
 
-<p>AS9138 Quality Management Systems Statistical Product Acceptance Requirements provides new guidance on inspection samplings for accepting and rejecting product that replaces the old <a href="https://en.wikipedia.org/wiki/MIL-STD-105">MIL-STD-105</a> sample plans.</p>
+<p>AS9138 Quality Management Systems Statistical Product Acceptance Requirements provides new guidance on inspection samplings for accepting and rejecting product that replaces the old <a href="https://en.wikipedia.org/wiki/MIL-STD-105">MIL-STD-105</a> sample plans. The old plans focused more on protecting the producer than the consumer with an “acceptible quality limit” (AQL) and also allowed lots to be shipped with discrepent parts included. The new plan focuses on consumer protection with an “average outgoing quality limit” (AOQL) instead and also takes advantage of smaller sample sizes that are possible when lots are screened 100% when discrepencies are found.</p>
+<p>For more information on why and how you should transition from the old sample plans to the new AS9138, see section 3.7.8 of the AIQG <a href="https://www.sae.org/servlets/registration?PORTAL_CODE=IAQG&amp;OBJECT_PKG=iaqg.businessClasses&amp;OBJECT_TYPE=SCMHGeneral&amp;PAGE=gotoSCMH">Supply Chain Management Handbook</a>.</p>
+<p>Let’s take a look at the difference in sample sizes between a common MIL-STD-105 AQL 1.5 plan and the new AS9138 AOQL of 1.9 that is equivalent in consumer protection according to AS9138.</p>
+<pre class="r"><code># import the tidyverse
+library(tidyverse)</code></pre>
