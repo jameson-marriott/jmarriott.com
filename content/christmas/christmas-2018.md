@@ -1,7 +1,10 @@
 +++
 title = "2018 Christmas Newsletter"
 slug = "2018 Christmas Newsletter"
-date = "2018-12-25"
+date = "2018-12-16"
+tags = "Christmas"
+categories = []
+draft = false
 +++
 
 <img src="images/jameson2018.jpg" alt="Jameson 2018 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="30%" height="auto"/>
