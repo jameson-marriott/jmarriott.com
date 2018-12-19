@@ -11,7 +11,7 @@ draft = false
 
 <img src="images/jameson2018.jpg" alt="Jameson 2018 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="30%" height="auto"/>
 
-**Jameson (30)**: papa of two, double raise getter, online student, manager, Young Mens president, chocolate maker, 20 pounds of cocoa eater, work is crazy-er, alternate state delegate, ankle sprainer, AC almost fixer, 60lbs of peaches eater, audio books/podcasts listener, come home for lunch every day-er
+**Jameson (30)**: papa of two, double raise getter, online student, manager, Young Mens president, chocolate maker, 20 pounds of cocoa eater, work is crazy-er, alternate state delegate, ankle sprainer, AC almost fixer, 60lbs of peaches eater, 28 audio books/podcasts listener, come home for lunch every day-er
 
 <div style = "clear:both"></div>
 
