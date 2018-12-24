@@ -29,7 +29,7 @@ draft = false
 
 <img src="images/jem2018.jpg" alt="Jem 2018 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="30%" height="auto"/>
 
-**Jem (0.997)**: Snorter, terrible sleeper, shots hater, sleep trainee, easy laugher, Etna visitor, mama's boy, wide eyes, smiler, Charlie endurer, late crawler, early walker, everyone-thinks-I'm-a-girl-er, tooth grinder
+**Jem (0.997)**: Snorter, terrible sleeper, shots hater, sleep trainee, easy laugher, Etna visitor, mama's boy, wide eyes, smiler, Charlie endurer, late crawler, early walker, everyone-thinks-I'm-a-girl-er, tooth grinder, snugglebug
 
 <div style = "clear:both"></div>
 
