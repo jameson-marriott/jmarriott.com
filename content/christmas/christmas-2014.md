@@ -21,4 +21,4 @@ draft = false
 
 <div style = "clear:both"></div>
 
-<img src="images/family_christmas_pic_2014.jpg" alt="2014 Christmas Picture" width="100%" height="auto"/>
+<img src="images/family2014.jpg" alt="2014 Christmas Picture" width="100%" height="auto"/>
