@@ -12,11 +12,10 @@ draft: TRUE
 
 
 
-<p>I spent some time over Christmas playing some games of chance with my in-laws. Some of them didn’t have any strategy at all, and they left me wondering about what the odds are of wining. In the case of Tenzi, the only thing that you can really do to get better at the game is to get faster at reading and rolling dice. If you’re not familiar with the rules, you can find them <a href="https://ilovetenzi.com/rules/">here</a>.</p>
-<p>Let’s start by looking at how many rolls it takes to win. We’ll be usiing r and first, we’ll import the tidyverse.</p>
-<pre class="r"><code># import the tidyverse
-library(tidyverse)</code></pre>
-<p>There is probably a pretty straightforward way to mathematically solve this problem, but it will be quite easy to simulate, so that’s the approach I’m going take. I’ll start by simulating a roll of ten dice, chose the most comon number to keep rolling, and then roll the diminishing dice until I have achieved ten dice with the same result.</p>
+<p>I spent some time over Christmas playing games of chance with my in-laws. Some of them didn’t have any strategy at all, and they left me wondering what the odds were of wining. In the case of Tenzi, the only thing you can really do to get better at the game is to roll and read dice faster. If you’re not familiar with the rules, you can find them <a href="https://ilovetenzi.com/rules/">here</a>.</p>
+<p>Let’s start by looking at how many rolls it takes to win. We’ll be usiing r, and this post assumes some familiarity with that language. Frst we’ll load the tidyverse.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<p>There is probably a straightforward way to mathematically solve this problem, but it will be quite easy to simulate, so that’s the approach I’m going take. I’ll start by simulating a roll of ten dice, chose the most comon number to keep rolling, and then roll the diminishing dice until they all have the same result.</p>
 <pre class="r"><code># Roll ten dice, get the count of the number with the most rolls
 dice_rolls &lt;- data_frame(roll = sample(1:6, 10, replace = TRUE)) %&gt;%
   group_by(roll) %&gt;%
@@ -38,9 +37,10 @@ while(count_int &lt; 10) {
     length()
   roll_count_int = roll_count_int + 1
 }</code></pre>
-<p>On this particular simulated series of rolls, it took 7 rolls to achieve ten dice with the number 6.</p>
+<p>On this particular simulated series of rolls, it took 8 rolls to achieve ten dice with the number 5.</p>
 <p>Let’s turn this code into a function that we can call over and over again to create some data we can look at to figure out how many rolls it usually takes to win.</p>
 <pre class="r"><code>round_of_tenzi &lt;- function() {
+  # Roll ten dice, get the count of the number with the most rolls
   dice_rolls &lt;- data_frame(roll = sample(1:6, 10, replace = TRUE)) %&gt;%
   group_by(roll) %&gt;%
   summarize(count = n()) %&gt;%
@@ -62,7 +62,7 @@ while(count_int &lt; 10) {
     }
   return(roll_count_int)
   }</code></pre>
-<p>Now we’re ready to simulate rolling the dice a bunch of times. Just running the function a few times in the console, it looks like the average number of rolls that it takes to win will be somewhere from 7-9. I’ve set eval to FALSE so that this chunk won’t re-render, so you’ll want to change that if you want to run the code automatically.</p>
+<p>Now we’re ready to simulate rolling the dice a bunch of times. Just running the function a few times in the console, it looks like the average number of rolls that it takes to win will be somewhere from 7-9.</p>
 <pre class="r"><code># Create a dataframe to store all the results in
 rolls_df &lt;- data_frame(num_rolls = rep(0, 1e+06))
 
@@ -70,7 +70,7 @@ rolls_df &lt;- data_frame(num_rolls = rep(0, 1e+06))
 for (i in 1:1e+06) {
   rolls_df[i,1] &lt;- round_of_tenzi()
 }</code></pre>
-<p>That took about 4 hours to compute on my XPS with a i7-6500U and 8GB of RAM. That would be too long for a production environment, but for a one-time computation that’s OK. I started it before I went to bed and it was ready in the morning.</p>
+<p>That took about 4 hours to compute on my laptop with an i7 and 8GB of RAM. That would be too long for a production environment, but for a one-time computation that’s OK. I started it before I went to bed and it was ready in the morning.</p>
 <p>Now, let’s take a look at the data.</p>
 <pre class="r"><code>rolls_df %&gt;%
   ggplot(aes(x = num_rolls)) +
@@ -95,3 +95,4 @@ for (i in 1:1e+06) {
 ## 7         8 529072 52.9     
 ## 8         9  67539  6.75</code></pre>
 <p>So, the person who gets all their dice in 5-6 rolls is likely the winner. And, if you’ve rolled ten times then you probably missed a dice and re-rolled it by accident.</p>
+<p>I’m sure that there’s a more efficient way to simulate this problem. Maybe in a future post I’ll look into running my function in parallel which would reduce the runtime considerably. Also, it would be interesting to see the distrubution of the number of dice rolled each round. In other words, how often does a player have to roll only one dice two-three times before ending the round. Let me know what improvements you see to this short excercise!</p>
