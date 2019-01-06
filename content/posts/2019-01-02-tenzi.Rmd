@@ -1,0 +1,117 @@
+---
+title: "How many rounds of Tenzi does it take to win?"
+author: "Jameson Marriott"
+date: "2019-01-02"
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+    dev: "svg"
+draft: TRUE
+---
+
+I spent some time over Christmas playing some games of chance with my in-laws. Some of them didn't have any strategy at all, and they left me wondering about what the odds are of wining. In the case of Tenzi, the only thing that you can really do to get better at the game is to get faster at reading and rolling dice. If you're not familiar with the rules, you can find them [here](https://ilovetenzi.com/rules/).
+
+Let's start by looking at how many rolls it takes to win. We'll be usiing r and first, we'll import the tidyverse. 
+
+```{r startup, warning=FALSE, message=FALSE}
+# import the tidyverse
+library(tidyverse)
+```
+
+There is probably a pretty straightforward way to mathematically solve this problem, but it will be quite easy to simulate, so that's the approach I'm going take. I'll start by simulating a roll of ten dice, chose the most comon number to keep rolling, and then roll the diminishing dice until I have achieved ten dice with the same result. 
+
+```{r roll}
+
+# Roll ten dice, get the count of the number with the most rolls
+dice_rolls <- data_frame(roll = sample(1:6, 10, replace = TRUE)) %>%
+  group_by(roll) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count))
+
+# Record the chosen number
+roll_int <- as.integer(dice_rolls[1, 1])
+
+# Record the number of dice rolled with the chosen number
+count_int <- as.integer(dice_rolls[1,2])
+
+# Count the number of times a hand of dice is rolled
+roll_count_int <- as.integer(1)
+
+while(count_int < 10) {
+  count_int = count_int + data_frame(roll = sample(1:6, 10 - count_int, replace = TRUE)) %>%
+    filter(roll == roll_int) %>%
+    length()
+  roll_count_int = roll_count_int + 1
+}
+```
+
+On this particular simulated series of rolls, it took `r roll_count_int` rolls to achieve ten dice with the number `r roll_int`.
+
+Let's turn this code into a function that we can call over and over again to create some data we can look at to figure out how many rolls it usually takes to win. 
+
+```{r roll_function}
+round_of_tenzi <- function() {
+  dice_rolls <- data_frame(roll = sample(1:6, 10, replace = TRUE)) %>%
+  group_by(roll) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count))
+  
+  # Record the chosen number
+  roll_int <- as.integer(dice_rolls[1, 1])
+  
+  # Record the number of dice rolled with the chosen number
+  count_int <- as.integer(dice_rolls[1,2])
+  
+  # Count the number of times a hand of dice is rolled
+  roll_count_int <- as.integer(1)
+  while(count_int < 10) {
+    count_int = count_int + data_frame(roll = sample(1:6, 10 - count_int, replace = TRUE)) %>%
+      filter(roll == roll_int) %>%
+      length()
+    roll_count_int = roll_count_int + 1
+    }
+  return(roll_count_int)
+  }
+```
+
+Now we're ready to simulate rolling the dice a bunch of times. Just running the function a few times in the console, it looks like the average number of rolls that it takes to win will be somewhere from 7-9. I've set eval to FALSE so that this chunk won't re-render, so you'll want to change that if you want to run the code automatically. 
+
+```{r simulation, eval=FALSE}
+# Create a dataframe to store all the results in
+rolls_df <- data_frame(num_rolls = rep(0, 1e+06))
+
+# Iterate through the dataframe, running a simulated instance of Tenzi for each row
+for (i in 1:1e+06) {
+  rolls_df[i,1] <- round_of_tenzi()
+}
+```
+```{r read_data, include=FALSE}
+# This chunk is included so that I don't have to run the 4 hour computation over-and-over again. 
+rolls_df <- read_csv("tenzi.csv") %>%
+  select(num_rolls)
+```
+
+That took about 4 hours to compute on my XPS with a i7-6500U and 8GB of RAM. That would be too long for a production environment, but for a one-time computation that's OK. I started it before I went to bed and it was ready in the morning. 
+
+Now, let's take a look at the data. 
+
+```{r graph_data}
+rolls_df %>%
+  ggplot(aes(x = num_rolls)) +
+  geom_histogram(binwidth = 1) +
+  theme_bw() +
+  ggtitle("Distribution of number of dice rolls in Tenzi")
+```
+
+
+It's interesting that the distribution drops off so sharply after 8 rolls. Let's see what the probablility of each number of rolls is. 
+
+```{r probabilities}
+rolls_df %>%
+  group_by(num_rolls) %>%
+  summarise(count = n()) %>%
+  mutate(percent = count/1e+04)
+```
+
+So, the person who gets all their dice in 5-6 rolls is likely the winner. And, if you've rolled ten times then you probably missed a dice and re-rolled it by accident. 
