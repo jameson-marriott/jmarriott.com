@@ -13,6 +13,8 @@ pygmentsstyle = "bw"
 pygmentscodefences = true
 pygmentscodefencesguesssyntax = true
 
+disqusShortname = "jmarriott"
+
 [params]
     author = "Jameson Marriott"
     info = "Quality Control Manager"
