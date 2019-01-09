@@ -12,7 +12,7 @@ draft: TRUE
 
 I spent some time over Christmas playing games of chance with my in-laws. Some of them didn't have any strategy at all, and they left me wondering what the odds were of wining. In the case of Tenzi, the only thing you can really do to get better at the game is to roll and read dice faster. If you're not familiar with the rules, you can find them [here](https://ilovetenzi.com/rules/).
 
-Let's start by looking at how many rolls it takes to win. We'll be usiing r, and this post assumes some familiarity with that language. Frst we'll load the tidyverse. 
+Let's start by looking at how many rolls it takes to win. We'll be using r, and this post assumes some familiarity with that language. Frst we'll load the tidyverse. 
 
 ```{r startup, warning=FALSE, message=FALSE}
 library(tidyverse)
@@ -35,7 +35,7 @@ roll_int <- as.integer(dice_rolls[1, 1])
 count_int <- as.integer(dice_rolls[1,2])
 
 # Count the number of times a hand of dice is rolled
-roll_count_int <- as.integer(1)
+roll_count_int <- as.integer(0)
 
 while(count_int < 10) {
   count_int = count_int + data_frame(roll = sample(1:6, 10 - count_int, replace = TRUE)) %>%
@@ -64,7 +64,7 @@ round_of_tenzi <- function() {
   count_int <- as.integer(dice_rolls[1,2])
   
   # Count the number of times a hand of dice is rolled
-  roll_count_int <- as.integer(1)
+  roll_count_int <- as.integer(0)
   while(count_int < 10) {
     count_int = count_int + data_frame(roll = sample(1:6, 10 - count_int, replace = TRUE)) %>%
       filter(roll == roll_int) %>%
@@ -75,7 +75,7 @@ round_of_tenzi <- function() {
   }
 ```
 
-Now we're ready to simulate rolling the dice a bunch of times. Just running the function a few times in the console, it looks like the average number of rolls that it takes to win will be somewhere from 7-9.
+Now we're ready to simulate rolling the dice a bunch of times. Just running the function a few times in the console, it looks like the average number of rolls that it takes to win will be somewhere from six to eight.
 
 ```{r simulation, eval=FALSE}
 # Create a dataframe to store all the results in
@@ -92,7 +92,7 @@ rolls_df <- read_csv("tenzi.csv") %>%
   select(num_rolls)
 ```
 
-That took about 4 hours to compute on my laptop with an i7 and 8GB of RAM. That would be too long for a production environment, but for a one-time computation that's OK. I started it before I went to bed and it was ready in the morning. 
+That took about four hours to compute on my laptop. That would probably be too long for a production environment, but for a one-time computation that's OK. I started it before I went to bed and it was ready in the morning. 
 
 Now, let's take a look at the data. 
 
@@ -105,7 +105,7 @@ rolls_df %>%
 ```
 
 
-It's interesting that the distribution drops off so sharply after 8 rolls. Let's see what the probablility of each number of rolls is. 
+It's interesting that the distribution drops off so sharply after seven rolls. Let's see what the probablility is of winning for each number of rolls.
 
 ```{r probabilities}
 rolls_df %>%
@@ -114,7 +114,8 @@ rolls_df %>%
   mutate(percent = count/1e+04)
 ```
 
-So, the person who gets all their dice in 5-6 rolls is likely the winner. And, if you've rolled ten times then you probably missed a dice and re-rolled it by accident. 
+So, the person who gets all their dice in four-five rolls is likely the winner. And, if you've rolled ten times then you probably missed a dice and re-rolled it by accident. 
 
 I'm sure that there's a more efficient way to simulate this problem. Maybe in a future post I'll look into running my function in parallel which would reduce the runtime considerably. Also, it would be interesting to see the distrubution of the number of dice rolled each round. In other words, how often does a player have to roll only one dice two-three times before ending the round. 
-Let me know what improvements you see to this short excercise!
+
+Comment belown on what improvements you see to this short excercise!
