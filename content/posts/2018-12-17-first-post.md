@@ -1,6 +1,7 @@
 +++
 date = "2018-12-17"
 title = "First Post"
+slug = "first-post"
 draft = "false"
 +++
 

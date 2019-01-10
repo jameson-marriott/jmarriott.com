@@ -1,5 +1,6 @@
 ---
 title: "How many rounds of Tenzi does it take to win?"
+slug: "tenzi"
 author: "Jameson Marriott"
 date: "2019-01-02"
 output:
@@ -37,7 +38,7 @@ while(count_int &lt; 10) {
     length()
   roll_count_int = roll_count_int + 1
 }</code></pre>
-<p>On this particular simulated series of rolls, it took 7 rolls to achieve ten dice with the number 5.</p>
+<p>On this particular simulated series of rolls, it took 6 rolls to achieve ten dice with the number 4.</p>
 <p>Let’s turn this code into a function that we can call over and over again to create some data we can look at to figure out how many rolls it usually takes to win.</p>
 <pre class="r"><code>round_of_tenzi &lt;- function() {
   # Roll ten dice, get the count of the number with the most rolls
