@@ -1,0 +1,25 @@
+---
+title: "How to Animate Control Charts"
+slug: "animate-control-charts"
+author: "Jameson Marriott"
+date: "2019-01-15"
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+    dev: "svg"
+draft: TRUE
+---
+
+R is a great language for statistical process control and there are several great packages for doing that, including [qcc](https://cran.r-project.org/package=qcc), [SixSigma](https://cran.r-project.org/package=SixSigma), and a new one that I want to explore today called [ggQC](http://rcontrolcharts.com/). I've been using qcc for a while and I trust its calculations, so I'll use that to validate ggQC. 
+
+The advantage of ggQC is that it extends [ggplot2](https://ggplot2.tidyverse.org/), so that you get all of the flexibility that comes with that, including the ability to animate plots with [gganimate](https://github.com/thomasp85/gganimate). 
+
+First, let's import the tidyverse, qcc, and ggQC (you'll need to install these first if you haven't already). 
+
+```{r startup, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(qcc)
+library(ggQC)
+```
+
