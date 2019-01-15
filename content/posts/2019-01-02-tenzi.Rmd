@@ -13,7 +13,7 @@ draft: TRUE
 
 I spent some time over Christmas playing games of chance with my in-laws. Some of them didn't have any strategy at all, and they left me wondering what the odds were of wining. In the case of Tenzi, the only thing you can really do to get better at the game is to roll and read dice faster. If you're not familiar with the rules, you can find them [here](https://ilovetenzi.com/rules/).
 
-Let's start by looking at how many rolls it takes to win. We'll be using r, and this post assumes some familiarity with that language. Frst we'll load the tidyverse. 
+Let's start by looking at how many rolls it takes to win. We'll be using R, and this post assumes some familiarity with that language. Frst we'll load the tidyverse. 
 
 ```{r startup, warning=FALSE, message=FALSE}
 library(tidyverse)
