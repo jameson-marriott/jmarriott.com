@@ -110,9 +110,10 @@ It's interesting that the distribution drops off so sharply after seven rolls. L
 
 ```{r probabilities}
 rolls_df %>%
-  group_by(num_rolls) %>%
-  summarise(count = n()) %>%
-  mutate(percent = count/1e+04)
+  group_by(`Number of Rolls` = num_rolls) %>%
+  summarise(Count = n()) %>%
+  mutate(Percent = count/1e+04) %>%
+  knitr::kable(format = "html")
 ```
 
 So, the person who gets all their dice in five-six rolls is likely the winner. And, if you've rolled ten times then you probably missed a dice and re-rolled it by accident. 
