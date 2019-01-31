@@ -50,7 +50,7 @@ You can see that as long as the data is formatted with each group on its own row
 
 Let's take a look at the same thing with ggQC. First we'll need to put the data in long format, then we'll pass that to ggplot and add some ggQC layers. 
 
-```{r}
+```{r ggQC_chart}
 example_df %>%
   mutate(Groups = row_number()) %>%
   gather(key = "columns", value = "Observations", -Groups) %>% # key is meaningless in this context.
@@ -78,7 +78,7 @@ example_df %>%
 
 Since that didn't work as well as I wanted, let's try a hyrbid approach with qcc and ggplot2. I'm just shooting from the hip here. 
 
-```{r}
+```{r hybrid}
 # Get all of the violations from the qcc object
 violations <- data_frame(Observations = qcc_chart$violations) %>%
   map(unlist) %>%
