@@ -2,7 +2,7 @@
 title: "How many rounds of Tenzi does it take to win?"
 slug: "tenzi"
 author: "Jameson Marriott"
-date: "2019-01-02"
+date: "2019-01-30"
 output:
   blogdown::html_page:
     toc: true
