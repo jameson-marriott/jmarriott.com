@@ -101,19 +101,19 @@ Now, let's take a look at the data.
 rolls_df %>%
   ggplot(aes(x = num_rolls)) +
   geom_histogram(binwidth = 1) +
-  theme_bw() +
-  ggtitle("Distribution of number of dice rolls in Tenzi")
+  ggplot2::scale_x_continuous(limits = c(2,10)) +
+  ylab("Occurances") +
+  xlab("Number of Rolls") +
+  theme_classic()
 ```
-
 
 It's interesting that the distribution drops off so sharply after seven rolls. Let's see what the probablility is of winning for each number of rolls.
 
 ```{r probabilities}
 rolls_df %>%
   group_by(`Number of Rolls` = num_rolls) %>%
-  summarise(Count = n()) %>%
-  mutate(Percent = count/1e+04) %>%
-  knitr::kable(format = "html")
+  summarise(`Percent Probability` = n()/1e+04) %>%
+  knitr::kable()
 ```
 
 So, the person who gets all their dice in five-six rolls is likely the winner. And, if you've rolled ten times then you probably missed a dice and re-rolled it by accident. 

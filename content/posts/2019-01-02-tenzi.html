@@ -38,7 +38,7 @@ while(count_int &lt; 10) {
     length()
   roll_count_int = roll_count_int + 1
 }</code></pre>
-<p>On this particular simulated series of rolls, it took 7 rolls to achieve ten dice with the number 3.</p>
+<p>On this particular simulated series of rolls, it took 8 rolls to achieve ten dice with the number 3.</p>
 <p>Let’s turn this code into a function that we can call over and over again to create some data we can look at to figure out how many rolls it usually takes to win.</p>
 <pre class="r"><code>round_of_tenzi &lt;- function() {
   # Roll ten dice, get the count of the number with the most rolls
@@ -76,25 +76,58 @@ for (i in 1:1e+06) {
 <pre class="r"><code>rolls_df %&gt;%
   ggplot(aes(x = num_rolls)) +
   geom_histogram(binwidth = 1) +
-  theme_bw() +
-  ggtitle(&quot;Distribution of number of dice rolls in Tenzi&quot;)</code></pre>
+  ggplot2::scale_x_continuous(limits = c(2,10)) +
+  ylab(&quot;Occurances&quot;) +
+  xlab(&quot;Number of Rolls&quot;) +
+  theme_classic()</code></pre>
 <p><img src="/posts/2019-01-02-tenzi_files/figure-html/graph_data-1.svg" width="576" /></p>
 <p>It’s interesting that the distribution drops off so sharply after seven rolls. Let’s see what the probablility is of winning for each number of rolls.</p>
 <pre class="r"><code>rolls_df %&gt;%
-  group_by(num_rolls) %&gt;%
-  summarise(count = n()) %&gt;%
-  mutate(percent = count/1e+04)</code></pre>
-<pre><code>## # A tibble: 8 x 3
-##   num_rolls  count   percent
-##       &lt;int&gt;  &lt;int&gt;     &lt;dbl&gt;
-## 1         2      3  0.000300
-## 2         3    104  0.0104  
-## 3         4   1444  0.144   
-## 4         5  12942  1.29    
-## 5         6  77944  7.79    
-## 6         7 310952 31.1     
-## 7         8 529072 52.9     
-## 8         9  67539  6.75</code></pre>
+  group_by(`Number of Rolls` = num_rolls) %&gt;%
+  summarise(`Percent Probability` = n()/1e+04) %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Number of Rolls</th>
+<th align="right">Percent Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">2</td>
+<td align="right">0.0003</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="right">0.0104</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="right">0.1444</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="right">1.2942</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="right">7.7944</td>
+</tr>
+<tr class="even">
+<td align="right">7</td>
+<td align="right">31.0952</td>
+</tr>
+<tr class="odd">
+<td align="right">8</td>
+<td align="right">52.9072</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="right">6.7539</td>
+</tr>
+</tbody>
+</table>
 <p>So, the person who gets all their dice in five-six rolls is likely the winner. And, if you’ve rolled ten times then you probably missed a dice and re-rolled it by accident.</p>
 <p>I’m sure that there’s a more efficient way to simulate this problem. Maybe in a future post I’ll look into running my function in parallel which would reduce the runtime considerably. Also, it would be interesting to see the distrubution of the number of dice rolled each round. In other words, how often does a player have to roll only one dice two-three times before ending the round?</p>
 <p>Comment belown on what improvements you see to this short excercise!</p>
