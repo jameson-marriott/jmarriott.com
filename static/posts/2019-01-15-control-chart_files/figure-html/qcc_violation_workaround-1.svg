@@ -103,7 +103,7 @@
   <path d="M 50.582031 5.480469 L 427.523438 5.480469 L 427.523438 328.398438 L 50.582031 328.398438 Z M 50.582031 5.480469 "/>
 </clipPath>
 </defs>
-<g id="surface6">
+<g id="surface26">
 <rect x="0" y="0" width="432" height="360" style="fill:rgb(100%,100%,100%);fill-opacity:1;stroke:none;"/>
 <rect x="0" y="0" width="432" height="360" style="fill:rgb(100%,100%,100%);fill-opacity:1;stroke:none;"/>
 <path style="fill:none;stroke-width:1.066978;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:10;" d="M 0 360 L 432 360 L 432 0 L 0 0 Z M 0 360 "/>
@@ -237,6 +237,9 @@
   <use xlink:href="#glyph0-11" x="410.868219" y="95.421875"/>
   <use xlink:href="#glyph0-10" x="415.615439" y="95.421875"/>
 </g>
+<path style="fill-rule:nonzero;fill:rgb(100%,0%,0%);fill-opacity:1;stroke-width:0.708661;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 371.375 20.113281 C 371.375 22.71875 367.46875 22.71875 367.46875 20.113281 C 367.46875 17.503906 371.375 17.503906 371.375 20.113281 "/>
+<path style="fill-rule:nonzero;fill:rgb(100%,0%,0%);fill-opacity:1;stroke-width:0.708661;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 381.484375 66.265625 C 381.484375 68.875 377.574219 68.875 377.574219 66.265625 C 377.574219 63.660156 381.484375 63.660156 381.484375 66.265625 "/>
+<path style="fill-rule:nonzero;fill:rgb(100%,0%,0%);fill-opacity:1;stroke-width:0.708661;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 128.835938 235.171875 C 128.835938 237.777344 124.925781 237.777344 124.925781 235.171875 C 124.925781 232.566406 128.835938 232.566406 128.835938 235.171875 "/>
 <path style="fill:none;stroke-width:1.066978;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(20%,20%,20%);stroke-opacity:1;stroke-miterlimit:10;" d="M 50.582031 327.394531 L 426.523438 327.394531 L 426.523438 5.476563 L 50.582031 5.476563 Z M 50.582031 327.394531 "/>
 </g>
 <g style="fill:rgb(30.196078%,30.196078%,30.196078%);fill-opacity:1;">

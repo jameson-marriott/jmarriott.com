@@ -1,8 +1,8 @@
 ---
-title: "How to Animate Control Charts"
-slug: "animate-control-charts"
+title: "Testing out ggQC"
+slug: "testing-ggQC"
 author: "Jameson Marriott"
-date: "2019-01-15"
+date: "2019-02-09"
 output:
   blogdown::html_page:
     toc: true
@@ -14,96 +14,72 @@ draft: TRUE
 
 
 <p>R is a great language for statistical process control largely because there are several packages which make it quite easy, including <a href="https://cran.r-project.org/package=qcc">qcc</a>, <a href="https://cran.r-project.org/package=SixSigma">SixSigma</a>, and a new one that I want to explore in this post called <a href="http://rcontrolcharts.com/">ggQC</a>. I’ve been using qcc for a while and I trust its calculations, so I’ll use that to validate ggQC.</p>
-<p>The advantage of ggQC is that it extends <a href="https://ggplot2.tidyverse.org/">ggplot2</a>, so that you get all of the flexibility that comes with that, including the ability to animate plots with <a href="https://github.com/thomasp85/gganimate">gganimate</a>.</p>
+<p>ggQC was created by Keneth Grey and I came accross it when I read his <a href="https://r-bar.net/xmr-limits-moving-range/">excelent article</a> on why we use r-bar and a constant to calculate the control limits on a control chart. The advantage of ggQC is that it extends <a href="https://ggplot2.tidyverse.org/">ggplot2</a>, so that you get all of the flexibility that comes with that, including the ability to animate plots with <a href="https://github.com/thomasp85/gganimate">gganimate</a>.</p>
 <p>First, let’s load the tidyverse, qcc, and ggQC (you’ll need to install these first if you haven’t already).</p>
 <pre class="r"><code>library(tidyverse)
 library(qcc)
 library(ggQC)</code></pre>
 <p>Now, let’s create an x-bar chart with qcc to use as a baseline.</p>
-<pre class="r"><code>#library(readxl) # package for reading excel files
-# Can&#39;t download Montgomery&#39;s supplemental data. Try again later. 
-
-# Generate Sample Data
+<pre class="r"><code># Generate sample data
 set.seed(20190117)
-example_df &lt;- data_frame(x1 = rnorm(n = 30, mean = 25, sd = .005),
-                         x2 = rnorm(n = 30, mean = 25, sd = .005),
-                         x3 = rnorm(n = 30, mean = 25, sd = .005),
-                         x4 = rnorm(n = 30, mean = 25, sd = .005),
-                         x5 = rnorm(n = 30, mean = 25, sd = .005)) %&gt;%
-  add_row(x1 = rnorm(n = 2, mean = 25.006, sd = .005),
-          x2 = rnorm(n = 2, mean = 25.006, sd = .005),
-          x3 = rnorm(n = 2, mean = 25.006, sd = .005),
-          x4 = rnorm(n = 2, mean = 25.006, sd = .005),
-          x5 = rnorm(n = 2, mean = 25.006, sd = .005))
+example_df &lt;- data_frame(values = rnorm(n=30*5, mean = 25, sd = .005),
+                         subgroup = rep(1:30, 5),
+                         n = rep(1:5, each = 30)) %&gt;%
+  add_row(values = rnorm(n=2*5, mean = 25 + .006, sd = .005),
+          subgroup = rep(31:32, 5),
+          n = rep(1:5, each = 2))
 
-qcc_chart &lt;- qcc(example_df, type = &quot;xbar&quot;, data.name = &quot;Example Data&quot;)</code></pre>
+# Spread the data and plot the control chart
+qcc_chart &lt;- example_df %&gt;%
+  spread(key = n, value = values) %&gt;%
+  select(-subgroup) %&gt;%
+  qcc(type = &quot;xbar&quot;, data.name = &quot;Example Data&quot;)</code></pre>
 <p><img src="/posts/2019-01-15-control-chart_files/figure-html/qcc_x-bar-1.svg" width="576" /></p>
 <pre class="r"><code>qcc_chart</code></pre>
-<pre><code>## List of 11
-##  $ call      : language qcc(data = example_df, type = &quot;xbar&quot;, data.name = &quot;Example Data&quot;)
-##  $ type      : chr &quot;xbar&quot;
-##  $ data.name : chr &quot;Example Data&quot;
-##  $ data      : num [1:32, 1:5] 25 25 25 25 25 ...
-##   ..- attr(*, &quot;dimnames&quot;)=List of 2
-##  $ statistics: Named num [1:32] 25 25 25 25 25 ...
-##   ..- attr(*, &quot;names&quot;)= chr [1:32] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; ...
-##  $ sizes     : int [1:32] 5 5 5 5 5 5 5 5 5 5 ...
-##  $ center    : num 25
-##  $ std.dev   : num 0.00485
-##  $ nsigmas   : num 3
-##  $ limits    : num [1, 1:2] 25 25
-##   ..- attr(*, &quot;dimnames&quot;)=List of 2
-##  $ violations:List of 2
-##  - attr(*, &quot;class&quot;)= chr &quot;qcc&quot;</code></pre>
 <p>You can see that as long as the data is formatted with each group on its own row, this package makes it very easy to generate a funcitonal control chart. However, customizing this chart isn’t as easy for those of us who primarily use ggplot2 instead of base plots.</p>
 <p>Let’s take a look at the same thing with ggQC. First we’ll need to put the data in long format, then we’ll pass that to ggplot and add some ggQC layers.</p>
-<pre class="r"><code>example_df %&gt;%
-  mutate(Groups = row_number()) %&gt;%
-  gather(key = &quot;columns&quot;, value = &quot;Observations&quot;, -Groups) %&gt;% # key is meaningless in this context.
-  ggplot(aes(x = Groups, y = Observations)) +
+<pre class="r"><code>ggQC_example &lt;- example_df %&gt;%
+  ggplot(aes(x = subgroup, y = values, group = 1)) +
   stat_summary(fun.y = mean, geom = &quot;point&quot;) +
   stat_summary(fun.y = mean, geom = &quot;line&quot;) +
-  stat_QC(method = &quot;XmR&quot;) +
-  stat_QC_labels(digits = 4) +
-  #stat_qc_violations() + # Facets all the violations instead of coloring the points.
+  stat_QC(method = &quot;xBar.rBar&quot;, auto.label = TRUE, label.digits = 4) +
+  #stat_qc_violations(method = &quot;xBar.rBar&quot;) + # Changes the graphed points... some sort of bug?
   scale_x_continuous(expand =  expand_scale(mult = c(.05, .15))) + # Pad the x-axis
   ylab(&quot;x-bar&quot;) +
-  theme_bw()</code></pre>
+  theme_bw()
+ggQC_example</code></pre>
 <p><img src="/posts/2019-01-15-control-chart_files/figure-html/ggQC_chart-1.svg" width="576" /></p>
-<p>Quite frankly, that was dissapointing. I like that ggplot2 makes it easy to customize everything, but I also like that it does a decent job right out of the box. In order to get this plot I had to add the points and lines myself, and the only thing that ggQC did for me was to plot the control limits and give me their values. Ideally, I’d like to be able to run the code like this:</p>
-<pre class="r"><code>example_df %&gt;%
-  mutate(Groups = row_number()) %&gt;%
-  gather(key = &quot;columns&quot;, value = &quot;Observations&quot;, -Groups) %&gt;% # key is meaningless in this context.
+<p>I would like for the two stat summaries to be plotted as part of <code>stat_QC</code>, but I like that you get more control over them when you plot them on their own and that you see exacly what you’re plotting. While building the chart this way seems a little tedious, it makes it easy to read what’s happening and also easy to add additional layers, like overlaying the individual points:</p>
+<pre class="r"><code>ggQC_example +
+  geom_point(alpha = .25)</code></pre>
+<p><img src="/posts/2019-01-15-control-chart_files/figure-html/ggQC_add_individuals-1.svg" width="576" /></p>
+<p>I like showing the plot like this because it is more clear to an innocent bystander exactly what is being plotted.</p>
+<p>One thing that I would like for ggQC to provide is an easy way to make a decent chart in just a few lines of code. For example, something like this:</p>
+<pre class="r"><code>tidy_df %&gt;%
   ggplot(aes(x = Groups, y = Observations)) +
-  stat_QC(method = &quot;XmR&quot;, labels = TRUE) +
-  theme_bw()</code></pre>
-<p>Since that didn’t work as well as I wanted, let’s try a hyrbid approach with qcc and ggplot2. I’m just shooting from the hip here.</p>
-<pre class="r"><code># Get all of the violations from the qcc object
-violations &lt;- data_frame(Observations = qcc_chart$violations) %&gt;%
+  stat_quick_QC(method = &quot;xBar.rBar&quot;, auto.label = TRUE, label.digits = 4)</code></pre>
+<p>Another thing missing from the ggQC package is coloring the violations. It is supposed to color them with the <code>stat_qc_violations()</code> layer, but I think that is a messy solution with the four facets and it is also buggy as you can see by the two violations it identifies are plotted in the wrong place on the x axis.</p>
+<pre class="r"><code>ggQC_example +
+  stat_qc_violations(method = &quot;xBar.rBar&quot;)</code></pre>
+<p><img src="/posts/2019-01-15-control-chart_files/figure-html/ggQC_violations-1.svg" width="576" /></p>
+<p>So, let’s try a work-around to color the violations. First we’ll get the violations from the ggQC <code>QC_Violations</code> function and then we’ll add them to the <code>ggQC_example</code> plot, colored red.</p>
+<pre class="r"><code>violations &lt;- example_df %&gt;%
+  QC_Violations(value = &quot;values&quot;, grouping = &quot;subgroup&quot;, method = &quot;xBar.rBar&quot;) %&gt;%
+  filter(Violation == TRUE) %&gt;%
+  select(data, Index) %&gt;%
+  unique()
+
+ggQC_example +
+  geom_point(data = violations, aes(x = Index, y = data), color = &quot;red&quot;)</code></pre>
+<p><img src="/posts/2019-01-15-control-chart_files/figure-html/ggQC_violation_workaround-1.svg" width="576" /></p>
+<p>You can see that <code>ggQC</code> doesn’t use the same violation rules as <code>qcc</code>, so lets do the same work-around with the qcc package.</p>
+<pre class="r"><code>violations &lt;- data_frame(Observations = qcc_chart$violations) %&gt;%
   map(unlist) %&gt;%
   as_data_frame() %&gt;%
-  mutate(violation = TRUE)
+  left_join(as_data_frame(qcc_chart$statistics) %&gt;% 
+              mutate(Observations = row_number()), 
+            by = &quot;Observations&quot;)
 
-# Get the points and control limits from the qcc objects, merge with the violations, and then identify the non-violations
-hybrid &lt;- data_frame(xbar = qcc_chart$statistics) %&gt;%
-  mutate(UCL = qcc_chart$limits[2],
-         LCL = qcc_chart$limits[1],
-         Observations = row_number()) %&gt;%
-  full_join(violations, by = &quot;Observations&quot;) %&gt;%
-  replace_na(list(violation = FALSE))
-
-# Plot the data with ggplot2
-hybrid %&gt;%
-  ggplot(aes(x = Observations, y = xbar)) +
-  geom_point() +
-  geom_point(data = hybrid %&gt;% filter(violation == TRUE),
-             aes(x = Observations,
-                 y = xbar),
-             color = &quot;red&quot;) +
-  geom_line() +
-  geom_hline(yintercept = c(qcc_chart$limits[1:2]), color = &quot;red&quot;) +
-  geom_hline(yintercept = qcc_chart$center) +
-  ylab(&quot;x-bar&quot;) +
-  theme_bw()</code></pre>
-<p><img src="/posts/2019-01-15-control-chart_files/figure-html/hybrid-1.svg" width="576" /></p>
-<p>That was a bit harder than using ggQC, but not a lot harder.</p>
+ggQC_example +
+  geom_point(data = violations, aes(x = Observations, y = value), color = &quot;red&quot;)</code></pre>
+<p><img src="/posts/2019-01-15-control-chart_files/figure-html/qcc_violation_workaround-1.svg" width="576" /></p>
