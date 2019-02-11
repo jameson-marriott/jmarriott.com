@@ -2,20 +2,20 @@
 title: "Testing out ggQC"
 slug: "testing-ggQC"
 author: "Jameson Marriott"
-date: "2019-02-09"
+date: "2019-02-11"
 output:
   blogdown::html_page:
     toc: true
     fig_width: 6
     dev: "svg"
-draft: TRUE
+draft: FALSE
 ---
 
-R is a great language for statistical process control largely because there are several packages which make it quite easy, including [qcc](https://cran.r-project.org/package=qcc), [SixSigma](https://cran.r-project.org/package=SixSigma), and a new one that I want to explore in this post called [ggQC](http://rcontrolcharts.com/). I've been using qcc for a while and I trust its calculations, so I'll use that to validate ggQC. 
+`r` is a great language for statistical process control largely because there are several packages which make it quite easy, including [qcc](https://cran.r-project.org/package=qcc), [SixSigma](https://cran.r-project.org/package=SixSigma), and a new one that I want to explore in this post called [ggQC](http://rcontrolcharts.com/). I've been using `qcc` for a while and I trust its calculations, so I'll use that to validate `ggQC`. 
 
-ggQC was created by Keneth Grey and I came accross it when I read his [excelent article](https://r-bar.net/xmr-limits-moving-range/) on why we use r-bar and a constant to calculate the control limits on a control chart. The advantage of ggQC is that it extends [ggplot2](https://ggplot2.tidyverse.org/), so that you get all of the flexibility that comes with that, including the ability to animate plots with [gganimate](https://github.com/thomasp85/gganimate). 
+`ggQC` was created by Keneth Grey and I came accross it when I read his [excelent article](https://r-bar.net/xmr-limits-moving-range/) on why we use r-bar and a constant to calculate the control limits on a control chart. The advantage of `ggQC` is that it extends [ggplot2](https://ggplot2.tidyverse.org/), so that you get all of the flexibility that comes with that. 
 
-First, let's load the tidyverse, qcc, and ggQC (you'll need to install these first if you haven't already). 
+First, let's load the `tidyverse`, `qcc`, and `ggQC` (you'll need to install these first if you haven't already). 
 
 ```{r startup, warning=FALSE, message=FALSE}
 library(tidyverse)
@@ -43,9 +43,9 @@ qcc_chart <- example_df %>%
 qcc_chart
 ```
 
-You can see that as long as the data is formatted with each group on its own row, this package makes it very easy to generate a funcitonal control chart. However, customizing this chart isn't as easy for those of us who primarily use ggplot2 instead of base plots. 
+You can see that as long as the data is formatted with each group on its own row, this package makes it very easy to generate a funcitonal control chart. However, customizing this chart isn't as easy for those of us who primarily use `ggplot2` instead of base plots. 
 
-Let's take a look at the same thing with ggQC. First we'll need to put the data in long format, then we'll pass that to ggplot and add some ggQC layers. 
+Let's take a look at the same thing with ggQC. First we'll need to put the data in long format, then we'll pass that to `ggplot2` and add some `ggQC` layers. 
 
 ```{r ggQC_chart}
 ggQC_example <- example_df %>%
@@ -53,12 +53,13 @@ ggQC_example <- example_df %>%
   stat_summary(fun.y = mean, geom = "point") +
   stat_summary(fun.y = mean, geom = "line") +
   stat_QC(method = "xBar.rBar", auto.label = TRUE, label.digits = 4) +
-  #stat_qc_violations(method = "xBar.rBar") + # Changes the graphed points... some sort of bug?
-  scale_x_continuous(expand =  expand_scale(mult = c(.05, .15))) + # Pad the x-axis
+  scale_x_continuous(expand =  expand_scale(mult = c(.05, .15))) + # Pad the x-axis for the labels
   ylab("x-bar") +
   theme_bw()
 ggQC_example
 ```
+
+You can see that both packages compute the UCL and LCL identically. 
 
 I would like for the two stat summaries to be plotted as part of `stat_QC`, but I like that you get more control over them when you plot them on their own and that you see exacly what you're plotting. While building the chart this way seems a little tedious, it makes it easy to read what's happening and also easy to add additional layers, like overlaying the individual points:
 
@@ -77,7 +78,7 @@ tidy_df %>%
   stat_quick_QC(method = "xBar.rBar", auto.label = TRUE, label.digits = 4)
 ```
 
-Another thing missing from the ggQC package is coloring the violations. It is supposed to color them with the `stat_qc_violations()` layer, but I think that is a messy solution with the four facets and it is also buggy as you can see by the two violations it identifies are plotted in the wrong place on the x axis. 
+Another thing missing from the ggQC package is coloring the violations. It is supposed to color them with the `stat_qc_violations()` layer, but I think that is a messy solution with the four facets. It is also buggy, as you can see by the two violations that it identifies being plotted in the wrong place on the x axis. 
 
 ```{r ggQC_violations}
 ggQC_example +
@@ -98,7 +99,7 @@ ggQC_example +
 ```
 
 
-You can see that `ggQC` doesn't use the same violation rules as `qcc`, so lets do the same work-around with the qcc package. 
+You can see that `ggQC` doesn't use the same violation rules as `qcc`. `ggQC` lists its rules in the help documentation for `QC_Violations()`, but I don't see the rules documented anywhere for the `qcc` package. There are multiple sents of rules that people use, but I like to refer to the NIST Engineering Statistics Handbook [Western Electric Rules](https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc32.htm#WECO%20rules) since it's published by NIST and is publically available. However, neither package uses these rules exactly, so lets do the same work-around with the qcc package for fun. 
 
 ```{r qcc_violation_workaround}
 violations <- data_frame(Observations = qcc_chart$violations) %>%
@@ -112,3 +113,6 @@ ggQC_example +
   geom_point(data = violations, aes(x = Observations, y = value), color = "red")
 ```
 
+Overall I like the ggQC package. It's still an early version and has some things to work out, but I think that it's the natural progression of control charting in `r`.
+
+This post was generated with version `r packageVersion("ggQC")` of `ggQC`.
