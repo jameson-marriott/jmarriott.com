@@ -99,7 +99,7 @@ ggQC_example +
 ```
 
 
-You can see that `ggQC` doesn't use the same violation rules as `qcc`. `ggQC` lists its rules in the help documentation for `QC_Violations()`, but I don't see the rules documented anywhere for the `qcc` package. There are multiple sents of rules that people use, but I like to refer to the NIST Engineering Statistics Handbook [Western Electric Rules](https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc32.htm#WECO%20rules) since it's published by NIST and is publically available. However, neither package uses these rules exactly, so lets do the same work-around with the qcc package for fun. 
+You can see that `ggQC` doesn't use the same violation rules as `qcc`. `ggQC` lists its rules in the help documentation for `QC_Violations()`, but I don't see the rules documented anywhere for the `qcc` package. There are multiple sents of rules that people use, but I like to refer to the NIST Engineering Statistics Handbook [Western Electric rules](https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc32.htm#WECO%20rules) since they're published by NIST and are publically available. However, neither package uses these rules exactly, so lets do the same work-around with the qcc package for fun. 
 
 ```{r qcc_violation_workaround}
 violations <- data_frame(Observations = qcc_chart$violations) %>%

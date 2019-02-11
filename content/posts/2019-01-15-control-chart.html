@@ -72,7 +72,7 @@ ggQC_example</code></pre>
 ggQC_example +
   geom_point(data = violations, aes(x = Index, y = data), color = &quot;red&quot;)</code></pre>
 <p><img src="/posts/2019-01-15-control-chart_files/figure-html/ggQC_violation_workaround-1.svg" width="576" /></p>
-<p>You can see that <code>ggQC</code> doesn’t use the same violation rules as <code>qcc</code>. <code>ggQC</code> lists its rules in the help documentation for <code>QC_Violations()</code>, but I don’t see the rules documented anywhere for the <code>qcc</code> package. There are multiple sents of rules that people use, but I like to refer to the NIST Engineering Statistics Handbook <a href="https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc32.htm#WECO%20rules">Western Electric Rules</a> since it’s published by NIST and is publically available. However, neither package uses these rules exactly, so lets do the same work-around with the qcc package for fun.</p>
+<p>You can see that <code>ggQC</code> doesn’t use the same violation rules as <code>qcc</code>. <code>ggQC</code> lists its rules in the help documentation for <code>QC_Violations()</code>, but I don’t see the rules documented anywhere for the <code>qcc</code> package. There are multiple sents of rules that people use, but I like to refer to the NIST Engineering Statistics Handbook <a href="https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc32.htm#WECO%20rules">Western Electric rules</a> since they’re published by NIST and are publically available. However, neither package uses these rules exactly, so lets do the same work-around with the qcc package for fun.</p>
 <pre class="r"><code>violations &lt;- data_frame(Observations = qcc_chart$violations) %&gt;%
   map(unlist) %&gt;%
   as_data_frame() %&gt;%
