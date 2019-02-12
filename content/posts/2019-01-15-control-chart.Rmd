@@ -9,6 +9,9 @@ output:
     fig_width: 6
     dev: "svg"
 draft: FALSE
+tags:
+  - r
+  - SPC
 ---
 
 `r` is a great language for statistical process control largely because there are several packages which make it quite easy, including [qcc](https://cran.r-project.org/package=qcc), [SixSigma](https://cran.r-project.org/package=SixSigma), and a new one that I want to explore in this post called [ggQC](http://rcontrolcharts.com/). I've been using `qcc` for a while and I trust its calculations, so I'll use that to validate `ggQC`. 
