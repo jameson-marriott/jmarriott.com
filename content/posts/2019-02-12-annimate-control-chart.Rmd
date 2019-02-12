@@ -1,0 +1,14 @@
+---
+title: "Testing out ggQC"
+slug: "testing-ggQC"
+author: "Jameson Marriott"
+date: "2019-02-11"
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+    dev: "svg"
+draft: TRUE
+tags:
+  - r
+---
