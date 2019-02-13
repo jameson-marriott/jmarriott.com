@@ -1,13 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
-<g>
-	<rect x="4.686" y="4.686" transform="matrix(0.7071 0.7071 -0.7071 0.7071 16 -6.6274)" fill="#000000" width="22.627" height="22.627"/>
-	<polygon fill="#FFFFFF" points="29.403,16 21.874,23.529 21.874,20.472 26.346,16 21.874,11.528 21.874,8.471 	"/>
-	<polygon fill="#FFFFFF" points="19.811,9.464 19.811,14.71 12.166,14.71 12.166,9.488 16,5.654 	"/>
-	<polygon fill="#FFFFFF" points="19.811,16.492 19.811,22.535 16,26.346 12.166,22.512 12.166,16.492 	"/>
-	<polygon fill="#FFFFFF" points="10.126,11.528 5.654,16 10.126,20.472 10.126,23.529 2.597,16 10.126,8.471 	"/>
-</g>
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 18.00 18.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    line, polyline, path, rect, circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMHwxOHwxNy4xfDAuOQ=='>
+    <rect x='0.00' y='0.90' width='18.00' height='16.20' />
+  </clipPath>
+</defs>
+<polyline points='9.00,16.36 0.82,5.56 3.44,1.64 14.56,1.64 17.18,5.56 9.00,16.36 6.22,5.56 9.00,1.64 11.62,5.56 9.00,16.36 0.82,5.56 17.18,5.56 14.56,1.64 11.62,5.56 6.22,5.56 3.44,1.64 ' style='stroke-width: 1.07;' clip-path='url(#cpMHwxOHwxNy4xfDAuOQ==)' />
+<defs>
+  <clipPath id='cpMHwxOHwxOHww'>
+    <rect x='0.00' y='0.00' width='18.00' height='18.00' />
+  </clipPath>
+</defs>
 </svg>

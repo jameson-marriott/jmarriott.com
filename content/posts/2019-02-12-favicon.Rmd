@@ -12,3 +12,60 @@ draft: TRUE
 tags:
   - r
 ---
+
+I use the [Hugo Coder](https://github.com/luizdepra/hugo-coder) theme for this website, but I don't like the default favicon, so I decided to make a new one using ggplot2. How hard could it be, right? 
+
+As always, let's load the `tidyverse`.
+
+```{r}
+library(tidyverse)
+```
+
+Next, let's generate some sample data. 
+
+```{r}
+set.seed(20190215)
+favicon_data <- data_frame(x = 1:25, y = rnorm(25)) %>%
+  add_row(x = 26, y = 2.5)
+
+favicon_data %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  geom_line() +
+  geom_hline(yintercept = c(2, -1.75), color = "red") +
+  geom_hline(yintercept = 0) +
+  theme_void()
+```
+
+
+
+```{r favicon, fig.height=3, fig.width=3, dpi=300}
+favicon_data <- read_table2("x y
+                           .50 .00
+                           .00 .66
+                           .16 .9
+                           .84 .9
+                           1.0 .66
+                           .50 .00
+                           .33 .66
+                           .50 .9
+                           .66 .66
+                           .50 .00
+                           .00 .66
+                           1.0 .66
+                           .84 .9
+                           .66 .66
+                           .33 .66
+                           .16 .9")
+favicon_data %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_path(lineend = "round", linejoin = "round", size = .5) +
+  theme_void() +
+  theme(aspect.ratio = .9)
+```
+
+```{r save-svg, eval=FALSE, include=FALSE}
+ggsave("favicon.svg", scale = 1, width = .25, height = .25)
+ggsave("favicon.png", scale = 1, width = .25, height = .25)
+```
+
