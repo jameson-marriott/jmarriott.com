@@ -1,5 +1,5 @@
 ---
-title: "Creating a Favicon"
+title: "Creating a Favicon with r"
 slug: "favicon"
 author: "Jameson Marriott"
 date: "2019-02-12"
@@ -15,4 +15,47 @@ tags:
 
 
 
+<p>I use the <a href="https://github.com/luizdepra/hugo-coder">Hugo Coder</a> theme for this website, but I don’t like the default favicon, so I decided to make a new one using ggplot2. For those of you who don’t know, a favicon is the little icon that appears on the browser tab next to the website name.</p>
+<p>How hard could it be, right?</p>
+<p>As always, let’s load the <code>tidyverse</code>.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<p>First, I manually set all of the points for my graphic. This was a little tedious and involved a lot of trial and error, but for such a basic geometric shape it wasn’t too bad. Then, I plotted the points using <code>geom_path</code>.</p>
+<pre class="r"><code>favicon_data &lt;- read_table2(&quot;x y
+                           .50 .00
+                           .00 .66
+                           .16 .9
+                           .84 .9
+                           1.0 .66
+                           .50 .00
+                           .33 .66
+                           .50 .9
+                           .66 .66
+                           .50 .00
+                           .00 .66
+                           1.0 .66
+                           .84 .9
+                           .66 .66
+                           .33 .66
+                           .16 .9&quot;)
 
+# create ggplot of favicon
+favicon &lt;- favicon_data %&gt;%
+  ggplot(aes(x = x, y = y)) +
+  geom_path(lineend = &quot;round&quot;, linejoin = &quot;round&quot;, size = .5) +
+  theme_void() +
+  theme(aspect.ratio = .9)</code></pre>
+<p><img src="images/favicon.svg" width="25%" height="auto"/></p>
+<p>I used the convinient <code>ggsave</code> function to save an svg and 16x16 png of the favicon. The line width is a function of the plot size, so I had to reset it for the larger 32x32 favicon.</p>
+<pre class="r"><code># save favicons
+ggsave(&quot;favicon.svg&quot;, scale = 1, width = .25, height = .25)
+ggsave(&quot;favicon16.png&quot;, scale = 1, width = 1, height = 1, dpi = 16)
+
+favicon &lt;- favicon_data %&gt;%
+  ggplot(aes(x = x, y = y)) +
+  geom_path(lineend = &quot;round&quot;, linejoin = &quot;round&quot;, size = 1) +
+  theme_void() +
+  theme(aspect.ratio = .9)
+
+# save the 32x32 favicon
+ggsave(&quot;favicon32.png&quot;, plot = favicon, scale = 1, width = 1, height = 1, dpi = 32)</code></pre>
+<p>This process didn’t take long and resulted in a decent favicon for my site.</p>
