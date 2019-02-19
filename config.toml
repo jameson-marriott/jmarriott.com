@@ -22,8 +22,8 @@ disqusShortname = "jmarriott"
     keywords = "blog,quality,personal,rstats"
     avatarurl = "images/jameson_bw.jpg"
 
-    #favicon_32 = "/img/favicon-32x32.png"
-    #favicon_16 = "/img/favicon-16x16.png"
+    favicon_32 = "images/favicon32.png"
+    favicon_16 = "images/favicon16.png"
 
     footercontent = "#rstats"
 
@@ -33,6 +33,7 @@ disqusShortname = "jmarriott"
     rtl = false
 
     math = false
+    
     #custom_css = ["css/custom.css"]
 
 # Social links
