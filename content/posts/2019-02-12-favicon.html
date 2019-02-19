@@ -47,8 +47,8 @@ favicon &lt;- favicon_data %&gt;%
 <p><img src="images/favicon.svg" width="25%" height="auto"/></p>
 <p>I used the convinient <code>ggsave</code> function to save an svg and 16x16 png of the favicon. The line width is a function of the plot size, so I had to reset it for the larger 32x32 favicon.</p>
 <pre class="r"><code># save favicons
-ggsave(&quot;favicon.svg&quot;, scale = 1, width = .25, height = .25)
-ggsave(&quot;favicon16.png&quot;, scale = 1, width = 1, height = 1, dpi = 16)
+ggsave(&quot;favicon.svg&quot;, scale = 1, width = .25, height = .25, bg = &quot;transparent&quot;)
+ggsave(&quot;favicon16.png&quot;, scale = 1, width = 1, height = 1, dpi = 16, bg = &quot;transparent&quot;)
 
 favicon &lt;- favicon_data %&gt;%
   ggplot(aes(x = x, y = y)) +
@@ -57,5 +57,5 @@ favicon &lt;- favicon_data %&gt;%
   theme(aspect.ratio = .9)
 
 # save the 32x32 favicon
-ggsave(&quot;favicon32.png&quot;, plot = favicon, scale = 1, width = 1, height = 1, dpi = 32)</code></pre>
+ggsave(&quot;favicon32.png&quot;, plot = favicon, scale = 1, width = 1, height = 1, dpi = 32, bg = &quot;transparent&quot;)</code></pre>
 <p>This process didn’t take long and resulted in a decent favicon for my site.</p>
