@@ -58,8 +58,8 @@ I used the convinient `ggsave` function to save an svg and 16x16 png of the favi
 
 ```{r save-svg, eval=FALSE}
 # save favicons
-ggsave("favicon.svg", scale = 1, width = .25, height = .25)
-ggsave("favicon16.png", scale = 1, width = 1, height = 1, dpi = 16)
+ggsave("favicon.svg", scale = 1, width = .25, height = .25, bg = "transparent")
+ggsave("favicon16.png", scale = 1, width = 1, height = 1, dpi = 16, bg = "transparent")
 
 favicon <- favicon_data %>%
   ggplot(aes(x = x, y = y)) +
@@ -68,7 +68,7 @@ favicon <- favicon_data %>%
   theme(aspect.ratio = .9)
 
 # save the 32x32 favicon
-ggsave("favicon32.png", plot = favicon, scale = 1, width = 1, height = 1, dpi = 32)
+ggsave("favicon32.png", plot = favicon, scale = 1, width = 1, height = 1, dpi = 32, bg = "transparent")
 ```
 
 This process didn't take long and resulted in a decent favicon for my site. 
