@@ -2,7 +2,7 @@
 title: "Creating a Favicon with r"
 slug: "favicon"
 author: "Jameson Marriott"
-date: "2019-02-12"
+date: "2019-02-27"
 output:
   blogdown::html_page:
     toc: true
