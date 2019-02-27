@@ -49,7 +49,7 @@ favicon <- favicon_data %>%
   ggplot(aes(x = x, y = y)) +
   geom_path(lineend = "round", linejoin = "round", size = .5) +
   theme_void() +
-  theme(aspect.ratio = .9)
+  theme(aspect.ratio = .9) # Make it a little more squatty
 ```
 
 <img src="images/favicon.svg" width="25%" height="auto"/>
@@ -71,4 +71,4 @@ favicon <- favicon_data %>%
 ggsave("favicon32.png", plot = favicon, scale = 1, width = 1, height = 1, dpi = 32, bg = "transparent")
 ```
 
-This process didn't take long and resulted in a decent favicon for my site. 
+The svg image looks way better on my high-resolution screen, and I also figured out that svgs are human-readable, which is super cool. But it appears that the most common browsers don't support them, so I'll stick with the rasterized images for my favicon.
