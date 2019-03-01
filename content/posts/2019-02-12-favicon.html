@@ -2,22 +2,21 @@
 title: "Creating a Favicon with r"
 slug: "favicon"
 author: "Jameson Marriott"
-date: "2019-02-27"
+date: "2019-03-01"
 output:
   blogdown::html_page:
     toc: true
     fig_width: 6
     dev: "svg"
-draft: TRUE
+draft: FALSE
 tags:
   - r
 ---
 
 
 
-<p>I use the <a href="https://github.com/luizdepra/hugo-coder">Hugo Coder</a> theme for this website, but I don’t like the default favicon, so I decided to make a new one using ggplot2. For those of you who don’t know, a favicon is the little icon that appears on the browser tab next to the website name.</p>
-<p>How hard could it be, right?</p>
-<p>As always, let’s load the <code>tidyverse</code>.</p>
+<p>I use the <a href="https://github.com/luizdepra/hugo-coder">Hugo Coder</a> theme for this website, but I don’t like the default favicon, so I decided to make a new one using ggplot2. For those of you who don’t know, a favicon is the little icon that shows up on your browser tab next to the website name (in most browsers).</p>
+<p>How hard could it be, right? As always, let’s load the <code>tidyverse</code>.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <p>First, I manually set all of the points for my graphic. This was a little tedious and involved a lot of trial and error, but for such a basic geometric shape it wasn’t too bad. Then, I plotted the points using <code>geom_path</code>.</p>
 <pre class="r"><code>favicon_data &lt;- read_table2(&quot;x y
@@ -43,7 +42,8 @@ favicon &lt;- favicon_data %&gt;%
   ggplot(aes(x = x, y = y)) +
   geom_path(lineend = &quot;round&quot;, linejoin = &quot;round&quot;, size = .5) +
   theme_void() +
-  theme(aspect.ratio = .9) # Make it a little more squatty</code></pre>
+  theme(aspect.ratio = .9) # Make it a little more squatty
+favicon</code></pre>
 <p><img src="images/favicon.svg" width="25%" height="auto"/></p>
 <p>I used the convinient <code>ggsave</code> function to save an svg and 16x16 png of the favicon. The line width is a function of the plot size, so I had to reset it for the larger 32x32 favicon.</p>
 <pre class="r"><code># save favicons
@@ -58,4 +58,4 @@ favicon &lt;- favicon_data %&gt;%
 
 # save the 32x32 favicon
 ggsave(&quot;favicon32.png&quot;, plot = favicon, scale = 1, width = 1, height = 1, dpi = 32, bg = &quot;transparent&quot;)</code></pre>
-<p>The svg image looks way better on my high-resolution screen, and I also figured out that svgs are human-readable, which is super cool. But it appears that the most common browsers don’t support them, so I’ll stick with the rasterized images for my favicon.</p>
+<p>The svg image looks way better on my high-resolution screen, and I also figured out that svgs are human-readable, which is super cool. But it appears that the most common browsers don’t support them, so I’ll stick with the rasterized images for my website.</p>

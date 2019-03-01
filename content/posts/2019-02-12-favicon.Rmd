@@ -2,22 +2,20 @@
 title: "Creating a Favicon with r"
 slug: "favicon"
 author: "Jameson Marriott"
-date: "2019-02-27"
+date: "2019-03-01"
 output:
   blogdown::html_page:
     toc: true
     fig_width: 6
     dev: "svg"
-draft: TRUE
+draft: FALSE
 tags:
   - r
 ---
 
-I use the [Hugo Coder](https://github.com/luizdepra/hugo-coder) theme for this website, but I don't like the default favicon, so I decided to make a new one using ggplot2. For those of you who don't know, a favicon is the little icon that appears on the browser tab next to the website name.
+I use the [Hugo Coder](https://github.com/luizdepra/hugo-coder) theme for this website, but I don't like the default favicon, so I decided to make a new one using ggplot2. For those of you who don't know, a favicon is the little icon that shows up on your browser tab next to the website name (in most browsers).
 
-How hard could it be, right? 
-
-As always, let's load the `tidyverse`.
+How hard could it be, right? As always, let's load the `tidyverse`.
 
 ```{r setup, message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -25,7 +23,7 @@ library(tidyverse)
 
 First, I manually set all of the points for my graphic. This was a little tedious and involved a lot of trial and error, but for such a basic geometric shape it wasn't too bad. Then, I plotted the points using `geom_path`.
 
-```{r favicon, fig.height=3, fig.width=3, message=FALSE, warning=FALSE, dpi=300}
+```{r favicon, fig.height=3, fig.width=3, message=FALSE, warning=FALSE, dpi=300, eval=FALSE}
 favicon_data <- read_table2("x y
                            .50 .00
                            .00 .66
@@ -50,6 +48,7 @@ favicon <- favicon_data %>%
   geom_path(lineend = "round", linejoin = "round", size = .5) +
   theme_void() +
   theme(aspect.ratio = .9) # Make it a little more squatty
+favicon
 ```
 
 <img src="images/favicon.svg" width="25%" height="auto"/>
@@ -71,4 +70,4 @@ favicon <- favicon_data %>%
 ggsave("favicon32.png", plot = favicon, scale = 1, width = 1, height = 1, dpi = 32, bg = "transparent")
 ```
 
-The svg image looks way better on my high-resolution screen, and I also figured out that svgs are human-readable, which is super cool. But it appears that the most common browsers don't support them, so I'll stick with the rasterized images for my favicon.
+The svg image looks way better on my high-resolution screen, and I also figured out that svgs are human-readable, which is super cool. But it appears that the most common browsers don't support them, so I'll stick with the rasterized images for my website.
