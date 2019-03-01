@@ -13,3 +13,4 @@ public/
 *.Rhistory
 .Rhistory
 /public/
+.Rhistory
