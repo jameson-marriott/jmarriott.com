@@ -51,7 +51,7 @@ favicon <- favicon_data %>%
 favicon
 ```
 
-<img src="images/favicon.svg" width="25%" height="auto"/>
+<img src="https://jmarriott.com/images/favicon.svg" width="25%" height="auto"/>
 
 I used the convinient `ggsave` function to save an svg and 16x16 png of the favicon. The line width is a function of the plot size, so I had to reset it for the larger 32x32 favicon. 
 
