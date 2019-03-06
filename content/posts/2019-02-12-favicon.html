@@ -44,7 +44,7 @@ favicon &lt;- favicon_data %&gt;%
   theme_void() +
   theme(aspect.ratio = .9) # Make it a little more squatty
 favicon</code></pre>
-<p><img src="images/favicon.svg" width="25%" height="auto"/></p>
+<p><img src="https://jmarriott.com/images/favicon.svg" width="25%" height="auto"/></p>
 <p>I used the convinient <code>ggsave</code> function to save an svg and 16x16 png of the favicon. The line width is a function of the plot size, so I had to reset it for the larger 32x32 favicon.</p>
 <pre class="r"><code># save favicons
 ggsave(&quot;favicon.svg&quot;, scale = 1, width = .25, height = .25, bg = &quot;transparent&quot;)
