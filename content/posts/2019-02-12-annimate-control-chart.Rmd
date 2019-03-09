@@ -1,14 +1,87 @@
 ---
-title: "Testing out ggQC"
-slug: "testing-ggQC"
+title: "Animate Control Chart"
+slug: "annimate-control-chart"
 author: "Jameson Marriott"
-date: "2019-02-11"
+date: "2019-03-09"
 output:
   blogdown::html_page:
     toc: true
     fig_width: 6
-    dev: "svg"
+    dev: "png"
 draft: TRUE
 tags:
   - r
+  - SPC
 ---
+
+Recently I wrote a post about [creating control charts in r](https://jmarriott.com/posts/testing-ggqc/), and now I want to experiment with animating one of those charts.
+
+Lets start with the `tidyverse`, `gganimate`, and `ggQC`. 
+
+```{r startup, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(gganimate)
+library(ggQC)
+```
+
+Now, lets rebuild the last control chart from my previous post. 
+
+```{r starting_plot}
+# Generate sample data
+set.seed(20190117)
+example_df <- data_frame(values = rnorm(n=30*5, mean = 25, sd = .005),
+                         subgroup = rep(1:30, 5),
+                         n = rep(1:5, each = 30)) %>%
+  add_row(values = rnorm(n=2*5, mean = 25 + .006, sd = .005),
+          subgroup = rep(31:32, 5),
+          n = rep(1:5, each = 2)) 
+
+violations <- example_df %>%
+  QC_Violations(value = "values", grouping = "subgroup", method = "xBar.rBar") %>%
+  filter(Violation == TRUE) %>%
+  select(data, Index) %>%
+  unique()
+
+ggQC_example <- example_df %>%
+  ggplot(aes(x = subgroup, y = values, group = 1)) +
+  stat_summary(fun.y = mean, geom = "point") +
+  stat_summary(fun.y = mean, geom = "line") +
+  stat_QC(method = "xBar.rBar", auto.label = TRUE, label.digits = 4) +
+  scale_x_continuous(expand =  expand_scale(mult = c(.05, .15))) + # Pad the x-axis for the labels
+  ylab("x-bar") +
+  theme_bw() +
+  geom_point(data = violations, aes(x = Index, y = data), color = "red")
+ggQC_example
+```
+
+The way that I overlaid the red points on top of the black points may cause us some grief when we go to annimate this plot, but let's give it a try. Shoutout to [this blogpost](https://theanlim.rbind.io/post/gganimate-animations-with-ggplot2/) for helping me figure out how to get this to display properly. 
+
+```{r take_one}
+ggQC_example +
+  transition_reveal(subgroup)
+```
+
+Ok, setting the red points asside, the graph looks crazy because it seems to recalculate the control limits for each frame. Let's try making the same plot from a tidy dataset, without the colored points, and see if that annimates a little more nicely. 
+
+```{r take_two, message=FALSE, warning=FALSE}
+tidy_df <- example_df %>%
+  group_by(subgroup) %>%
+  summarise(point = mean(values)) %>%
+  mutate(UCL = xBar_rBar_UCL(data = example_df, value = "values", grouping = "subgroup"),
+         LCL = xBar_rBar_LCL(data = example_df, value = "values", grouping = "subgroup"))
+
+take_two <- tidy_df %>%
+  ggplot(aes(x = subgroup, y = point)) +
+  geom_point() +
+  geom_line() +
+  geom_line(aes(x = subgroup, y = UCL), color = "red") +
+  geom_line(aes(x = subgroup, y = LCL), color = "red") +
+  geom_line(aes(x = subgroup, y = (UCL + LCL) / 2), alpha  = .5) +
+  xlab("x-bar") +
+  ylab("subgroup") +
+  theme_bw() +
+  transition_reveal(subgroup)
+take_two
+```
+
+That worked much more nicely. If I wanted the UCL and LCL to show up early, I could make those `geom_hline`s instead. 

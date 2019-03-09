@@ -1,18 +1,475 @@
 ---
-title: "Testing out ggQC"
-slug: "testing-ggQC"
+title: "Animate Control Chart"
+slug: "annimate-control-chart"
 author: "Jameson Marriott"
-date: "2019-02-11"
+date: "2019-03-09"
 output:
   blogdown::html_page:
     toc: true
     fig_width: 6
-    dev: "svg"
+    dev: "png"
 draft: TRUE
 tags:
   - r
+  - SPC
 ---
 
 
 
+<p>Recently I wrote a post about <a href="https://jmarriott.com/posts/testing-ggqc/">creating control charts in r</a>, and now I want to experiment with animating one of those charts.</p>
+<p>Lets start with the <code>tidyverse</code>, <code>gganimate</code>, and <code>ggQC</code>.</p>
+<pre class="r"><code>library(tidyverse)
+library(gganimate)
+library(ggQC)</code></pre>
+<p>Now, lets rebuild the last control chart from my previous post.</p>
+<pre class="r"><code># Generate sample data
+set.seed(20190117)
+example_df &lt;- data_frame(values = rnorm(n=30*5, mean = 25, sd = .005),
+                         subgroup = rep(1:30, 5),
+                         n = rep(1:5, each = 30)) %&gt;%
+  add_row(values = rnorm(n=2*5, mean = 25 + .006, sd = .005),
+          subgroup = rep(31:32, 5),
+          n = rep(1:5, each = 2)) </code></pre>
+<pre><code>## Warning: `data_frame()` is deprecated, use `tibble()`.
+## This warning is displayed once per session.</code></pre>
+<pre class="r"><code>violations &lt;- example_df %&gt;%
+  QC_Violations(value = &quot;values&quot;, grouping = &quot;subgroup&quot;, method = &quot;xBar.rBar&quot;) %&gt;%
+  filter(Violation == TRUE) %&gt;%
+  select(data, Index) %&gt;%
+  unique()
 
+ggQC_example &lt;- example_df %&gt;%
+  ggplot(aes(x = subgroup, y = values, group = 1)) +
+  stat_summary(fun.y = mean, geom = &quot;point&quot;) +
+  stat_summary(fun.y = mean, geom = &quot;line&quot;) +
+  stat_QC(method = &quot;xBar.rBar&quot;, auto.label = TRUE, label.digits = 4) +
+  scale_x_continuous(expand =  expand_scale(mult = c(.05, .15))) + # Pad the x-axis for the labels
+  ylab(&quot;x-bar&quot;) +
+  theme_bw() +
+  geom_point(data = violations, aes(x = Index, y = data), color = &quot;red&quot;)
+ggQC_example</code></pre>
+<p><img src="/posts/2019-02-12-annimate-control-chart_files/figure-html/starting_plot-1.png" width="576" /></p>
+<p>The way that I overlaid the red points on top of the black points may cause us some grief when we go to annimate this plot, but let’s give it a try. Shoutout to <a href="https://theanlim.rbind.io/post/gganimate-animations-with-ggplot2/">this blogpost</a> for helping me figure out how to get this to display properly.</p>
+<pre class="r"><code>ggQC_example +
+  transition_reveal(subgroup)</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).
+
+## Warning: Removed 1 rows containing missing values (geom_label).</code></pre>
+<p><img src="/posts/2019-02-12-annimate-control-chart_files/figure-html/take_one-1.gif" /><!-- --></p>
+<p>Ok, setting the red points asside, the graph looks crazy because it seems to recalculate the control limits for each frame. Let’s try making the same plot from a tidy dataset, without the colored points, and see if that annimates a little more nicely.</p>
+<pre class="r"><code>tidy_df &lt;- example_df %&gt;%
+  group_by(subgroup) %&gt;%
+  summarise(point = mean(values)) %&gt;%
+  mutate(UCL = xBar_rBar_UCL(data = example_df, value = &quot;values&quot;, grouping = &quot;subgroup&quot;),
+         LCL = xBar_rBar_LCL(data = example_df, value = &quot;values&quot;, grouping = &quot;subgroup&quot;))
+
+take_two &lt;- tidy_df %&gt;%
+  ggplot(aes(x = subgroup, y = point)) +
+  geom_point() +
+  geom_line() +
+  geom_line(aes(x = subgroup, y = UCL), color = &quot;red&quot;) +
+  geom_line(aes(x = subgroup, y = LCL), color = &quot;red&quot;) +
+  geom_line(aes(x = subgroup, y = (UCL + LCL) / 2), alpha  = .5) +
+  xlab(&quot;x-bar&quot;) +
+  ylab(&quot;subgroup&quot;) +
+  theme_bw() +
+  transition_reveal(subgroup)
+take_two</code></pre>
+<p><img src="/posts/2019-02-12-annimate-control-chart_files/figure-html/take_two-1.gif" /><!-- --></p>
+<p>That worked much more nicely. If I wanted the UCL and LCL to show up early, I could make those <code>geom_hline</code>s instead.</p>
