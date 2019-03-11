@@ -54,7 +54,7 @@ ggQC_example <- example_df %>%
 ggQC_example
 ```
 
-The way that I overlaid the red points on top of the black points may cause us some grief when we go to annimate this plot, but let's give it a try. Shoutout to [this blogpost](https://theanlim.rbind.io/post/gganimate-animations-with-ggplot2/) for helping me figure out how to get this to display properly. 
+The way that I overlaid the red points on top of the black points may cause us some grief when we go to annimate this plot, but let's give it a try.
 
 ```{r take_one}
 ggQC_example +
