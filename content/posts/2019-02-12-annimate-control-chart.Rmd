@@ -43,20 +43,20 @@ violations <- example_df %>%
   unique()
 
 ggQC_example <- example_df %>%
-  ggplot(aes(x = subgroup, y = values, group = 1)) +
-  stat_summary(fun.y = mean, geom = "point") +
+  ggplot(aes(x = subgroup, y = values)) +
+  stat_summary(fun.y = mean, geom = "point", group = seq_along("subgroup")) +
   stat_summary(fun.y = mean, geom = "line") +
   stat_QC(method = "xBar.rBar", auto.label = TRUE, label.digits = 4) +
   scale_x_continuous(expand =  expand_scale(mult = c(.05, .15))) + # Pad the x-axis for the labels
   ylab("x-bar") +
   theme_bw() +
-  geom_point(data = violations, aes(x = Index, y = data), color = "red")
+  geom_point(data = violations, aes(x = Index, y = data), color = "red", group = 1)
 ggQC_example
 ```
 
 The way that I overlaid the red points on top of the black points may cause us some grief when we go to annimate this plot, but let's give it a try.
 
-```{r take_one}
+```{r take_one, message=FALSE, warning=FALSE}
 ggQC_example +
   transition_reveal(subgroup)
 ```
@@ -72,11 +72,11 @@ tidy_df <- example_df %>%
 
 take_two <- tidy_df %>%
   ggplot(aes(x = subgroup, y = point)) +
-  geom_point() +
   geom_line() +
-  geom_line(aes(x = subgroup, y = UCL), color = "red") +
-  geom_line(aes(x = subgroup, y = LCL), color = "red") +
-  geom_line(aes(x = subgroup, y = (UCL + LCL) / 2), alpha  = .5) +
+  geom_point(aes(group = subgroup)) +
+  geom_line(aes(y = UCL), color = "red") +
+  geom_line(aes(y = LCL), color = "red") +
+  geom_line(aes(y = (UCL + LCL) / 2), alpha  = .5) +
   xlab("x-bar") +
   ylab("subgroup") +
   theme_bw() +
