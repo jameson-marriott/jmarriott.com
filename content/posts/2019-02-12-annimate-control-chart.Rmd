@@ -44,8 +44,8 @@ violations <- example_df %>%
 
 ggQC_example <- example_df %>%
   ggplot(aes(x = subgroup, y = values)) +
-  stat_summary(fun.y = mean, geom = "point", group = seq_along("subgroup")) +
-  stat_summary(fun.y = mean, geom = "line") +
+  stat_summary(fun.y = mean, geom = "line", aes(group = 1)) +
+  stat_summary(fun.y = mean, geom = "point", aes(group = 1)) +
   stat_QC(method = "xBar.rBar", auto.label = TRUE, label.digits = 4) +
   scale_x_continuous(expand =  expand_scale(mult = c(.05, .15))) + # Pad the x-axis for the labels
   ylab("x-bar") +
@@ -54,34 +54,43 @@ ggQC_example <- example_df %>%
 ggQC_example
 ```
 
-The way that I overlaid the red points on top of the black points may cause us some grief when we go to annimate this plot, but let's give it a try.
+You can see that I added some grouping variables to try and control the annimation, but I couldn't achieve the annimation that I was looking for. Take a look: 
 
 ```{r take_one, message=FALSE, warning=FALSE}
 ggQC_example +
   transition_reveal(subgroup)
 ```
 
-Ok, setting the red points asside, the graph looks crazy because it seems to recalculate the control limits for each frame. Let's try making the same plot from a tidy dataset, without the colored points, and see if that annimates a little more nicely. 
+Ok, setting the red points asside, the graph looks crazy because it seems to recalculate the control limits for each frame. Let's try making the same plot from a tidy dataset, and see if that annimates a little more nicely. 
 
 ```{r take_two, message=FALSE, warning=FALSE}
-tidy_df <- example_df %>%
-  group_by(subgroup) %>%
-  summarise(point = mean(values)) %>%
-  mutate(UCL = xBar_rBar_UCL(data = example_df, value = "values", grouping = "subgroup"),
-         LCL = xBar_rBar_LCL(data = example_df, value = "values", grouping = "subgroup"))
+# is there a way to hold the annimate for a second before it restarts?
 
-take_two <- tidy_df %>%
+UCL <- xBar_rBar_UCL(data = example_df, value = "values", grouping = "subgroup")
+LCL <- xBar_rBar_LCL(data = example_df, value = "values", grouping = "subgroup")
+
+example_df %>%
+  group_by(subgroup) %>%
+  summarise(point = mean(values)) %>% # caluculate the x-bar points
+  left_join(violations, by = c("subgroup" = "Index"), suffix = c("normal", "violation")) %>% # add the information about which points are out-of-control
+  mutate(control = case_when( # supply missing information from the join
+    is.na(data) ~ "out", 
+    TRUE ~ "in"
+  )) %>%
+  select(-data) %>% # discard the data column
   ggplot(aes(x = subgroup, y = point)) +
   geom_line() +
-  geom_point(aes(group = subgroup)) +
-  geom_line(aes(y = UCL), color = "red") +
-  geom_line(aes(y = LCL), color = "red") +
-  geom_line(aes(y = (UCL + LCL) / 2), alpha  = .5) +
+  geom_point(aes(group = subgroup, color = control)) + # adding the group aes keeps the points from dissapearing
+  geom_hline(yintercept = c(LCL, UCL), color = "red") + # usin geom_hline keeps the line from annimating
+  geom_hline(yintercept = (UCL + LCL) / 2, alpha  = .5) +
   xlab("x-bar") +
   ylab("subgroup") +
+  scale_color_manual(values = c("red", "black")) + # manually color the in-control vs out-of-control points
+  ggtitle("Annimated Control Chart") +
   theme_bw() +
-  transition_reveal(subgroup)
-take_two
+  theme(legend.position = "none") + # the legend is self-explanatory
+  transition_reveal(subgroup) # create the annimation
 ```
 
-That worked much more nicely. If I wanted the UCL and LCL to show up early, I could make those `geom_hline`s instead. 
+Sure enough, that worked much more nicely. The lesson-learned is that items that are calculated at the time of plotting act differently from those that are simply data being thrown on a graph. I couldn't figure out how to get `stat_QC` (which is calculated at run-time when plotting) to remain static, so I had to create a tidy dataset with all the information that I needed.
+Regardless, `ggannimate` makes annimations way easier than trying to creating all of those individual plots on their own and then combining them into a .gif. It would only be 32 plots if I wanted it to jump from point-to-point, but notice that the lines also get drawn rather than jumping. 
