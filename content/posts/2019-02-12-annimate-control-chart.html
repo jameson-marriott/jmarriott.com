@@ -1,8 +1,8 @@
 ---
-title: "Animate Control Chart"
+title: "How to Animate a Control Chart"
 slug: "annimate-control-chart"
 author: "Jameson Marriott"
-date: "2019-03-09"
+date: "2019-04-02"
 output:
   blogdown::html_page:
     toc: true
@@ -59,15 +59,16 @@ ggQC_example</code></pre>
 UCL &lt;- xBar_rBar_UCL(data = example_df, value = &quot;values&quot;, grouping = &quot;subgroup&quot;)
 LCL &lt;- xBar_rBar_LCL(data = example_df, value = &quot;values&quot;, grouping = &quot;subgroup&quot;)
 
-example_df %&gt;%
+take_two_df &lt;- example_df %&gt;%
   group_by(subgroup) %&gt;%
   summarise(point = mean(values)) %&gt;% # caluculate the x-bar points
   left_join(violations, by = c(&quot;subgroup&quot; = &quot;Index&quot;), suffix = c(&quot;normal&quot;, &quot;violation&quot;)) %&gt;% # add the information about which points are out-of-control
   mutate(control = case_when( # supply missing information from the join
     is.na(data) ~ &quot;out&quot;, 
     TRUE ~ &quot;in&quot;
-  )) %&gt;%
-  select(-data) %&gt;% # discard the data column
+  ))
+
+take_two &lt;- take_two_df %&gt;%
   ggplot(aes(x = subgroup, y = point)) +
   geom_line() +
   geom_point(aes(group = subgroup, color = control)) + # adding the group aes keeps the points from dissapearing
@@ -79,6 +80,9 @@ example_df %&gt;%
   ggtitle(&quot;Annimated Control Chart&quot;) +
   theme_bw() +
   theme(legend.position = &quot;none&quot;) + # the legend is self-explanatory
-  transition_reveal(subgroup) # create the annimation</code></pre>
+  transition_reveal(subgroup) # specify the annimation
+  
+animate(take_two, end_pause = 10) # using the animate() function allows me to set the end_pause</code></pre>
 <p><img src="/posts/2019-02-12-annimate-control-chart_files/figure-html/take_two-1.gif" /><!-- --></p>
-<p>Sure enough, that worked much more nicely. The lesson-learned is that items that are calculated at the time of plotting act differently from those that are simply data being thrown on a graph. I couldn’t figure out how to get <code>stat_QC</code> (which is calculated at run-time when plotting) to remain static, so I had to create a tidy dataset with all the information that I needed. Regardless, <code>ggannimate</code> makes annimations way easier than trying to creating all of those individual plots on their own and then combining them into a .gif. It would only be 32 plots if I wanted it to jump from point-to-point, but notice that the lines also get drawn rather than jumping.</p>
+<p>Sure enough, that worked much more nicely. The lesson-learned is that items that are calculated at the time of plotting act differently from those that are simply data being thrown on a graph. I couldn’t figure out how to get <code>stat_QC</code> (which is calculated at run-time when plotting) to remain static, so I had to create a tidy dataset with all the information that I needed.</p>
+<p>Regardless, <code>ggannimate</code> makes annimations way easier than trying to creating all of those individual plots on their own and then combining them into a .gif. It would only be 32 plots if I wanted it to jump from point-to-point, but notice that the lines also get drawn rather than jumping.</p>
