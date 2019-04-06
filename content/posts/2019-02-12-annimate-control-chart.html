@@ -2,13 +2,13 @@
 title: "How to Animate a Control Chart"
 slug: "annimate-control-chart"
 author: "Jameson Marriott"
-date: "2019-04-02"
+date: "2019-04-05"
 output:
   blogdown::html_page:
     toc: true
     fig_width: 6
     dev: "png"
-draft: TRUE
+draft: FALSE
 tags:
   - r
   - SPC
@@ -16,7 +16,7 @@ tags:
 
 
 
-<p>Recently I wrote a post about <a href="https://jmarriott.com/posts/testing-ggqc/">creating control charts in r</a>, and now I want to experiment with animating one of those charts.</p>
+<p>Recently, I wrote a post about <a href="https://jmarriott.com/posts/testing-ggqc/">creating control charts in r</a>, and now I want to experiment with animating one of those charts.</p>
 <p>Lets start with the <code>tidyverse</code>, <code>gganimate</code>, and <code>ggQC</code>.</p>
 <pre class="r"><code>library(tidyverse)
 library(gganimate)
@@ -29,10 +29,9 @@ example_df &lt;- data_frame(values = rnorm(n=30*5, mean = 25, sd = .005),
                          n = rep(1:5, each = 30)) %&gt;%
   add_row(values = rnorm(n=2*5, mean = 25 + .006, sd = .005),
           subgroup = rep(31:32, 5),
-          n = rep(1:5, each = 2)) </code></pre>
-<pre><code>## Warning: `data_frame()` is deprecated, use `tibble()`.
-## This warning is displayed once per session.</code></pre>
-<pre class="r"><code>violations &lt;- example_df %&gt;%
+          n = rep(1:5, each = 2)) 
+
+violations &lt;- example_df %&gt;%
   QC_Violations(value = &quot;values&quot;, grouping = &quot;subgroup&quot;, method = &quot;xBar.rBar&quot;) %&gt;%
   filter(Violation == TRUE) %&gt;%
   select(data, Index) %&gt;%
@@ -49,14 +48,12 @@ ggQC_example &lt;- example_df %&gt;%
   geom_point(data = violations, aes(x = Index, y = data), color = &quot;red&quot;, group = 1)
 ggQC_example</code></pre>
 <p><img src="/posts/2019-02-12-annimate-control-chart_files/figure-html/starting_plot-1.png" width="576" /></p>
-<p>You can see that I added some grouping variables to try and control the annimation, but I couldn’t achieve the annimation that I was looking for. Take a look:</p>
+<p>You can see that I added some grouping variables to try to control the annimation, but I couldn’t get it to look right. Take a look:</p>
 <pre class="r"><code>ggQC_example +
   transition_reveal(subgroup)</code></pre>
 <p><img src="/posts/2019-02-12-annimate-control-chart_files/figure-html/take_one-1.gif" /><!-- --></p>
-<p>Ok, setting the red points asside, the graph looks crazy because it seems to recalculate the control limits for each frame. Let’s try making the same plot from a tidy dataset, and see if that annimates a little more nicely.</p>
-<pre class="r"><code># is there a way to hold the annimate for a second before it restarts?
-
-UCL &lt;- xBar_rBar_UCL(data = example_df, value = &quot;values&quot;, grouping = &quot;subgroup&quot;)
+<p>Ok, setting the red points asside, the graph seems to recalculate the control limits for each frame. Let’s try making the same plot from a tidy dataset, and see if that annimates a little more nicely.</p>
+<pre class="r"><code>UCL &lt;- xBar_rBar_UCL(data = example_df, value = &quot;values&quot;, grouping = &quot;subgroup&quot;)
 LCL &lt;- xBar_rBar_LCL(data = example_df, value = &quot;values&quot;, grouping = &quot;subgroup&quot;)
 
 take_two_df &lt;- example_df %&gt;%
@@ -84,5 +81,5 @@ take_two &lt;- take_two_df %&gt;%
   
 animate(take_two, end_pause = 10) # using the animate() function allows me to set the end_pause</code></pre>
 <p><img src="/posts/2019-02-12-annimate-control-chart_files/figure-html/take_two-1.gif" /><!-- --></p>
-<p>Sure enough, that worked much more nicely. The lesson-learned is that items that are calculated at the time of plotting act differently from those that are simply data being thrown on a graph. I couldn’t figure out how to get <code>stat_QC</code> (which is calculated at run-time when plotting) to remain static, so I had to create a tidy dataset with all the information that I needed.</p>
+<p>Sure enough, that worked much more nicely. The lesson learned is that items that are calculated at the time of plotting act differently from those that are simply data being thrown on a graph. I couldn’t figure out how to get <code>stat_QC</code> (which is calculated at run-time when plotting) to remain static, so I had to create a tidy dataset with all the information that I needed.</p>
 <p>Regardless, <code>ggannimate</code> makes annimations way easier than trying to creating all of those individual plots on their own and then combining them into a .gif. It would only be 32 plots if I wanted it to jump from point-to-point, but notice that the lines also get drawn rather than jumping.</p>

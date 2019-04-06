@@ -2,19 +2,19 @@
 title: "How to Animate a Control Chart"
 slug: "annimate-control-chart"
 author: "Jameson Marriott"
-date: "2019-04-02"
+date: "2019-04-05"
 output:
   blogdown::html_page:
     toc: true
     fig_width: 6
     dev: "png"
-draft: TRUE
+draft: FALSE
 tags:
   - r
   - SPC
 ---
 
-Recently I wrote a post about [creating control charts in r](https://jmarriott.com/posts/testing-ggqc/), and now I want to experiment with animating one of those charts.
+Recently, I wrote a post about [creating control charts in r](https://jmarriott.com/posts/testing-ggqc/), and now I want to experiment with animating one of those charts.
 
 Lets start with the `tidyverse`, `gganimate`, and `ggQC`. 
 
@@ -26,7 +26,7 @@ library(ggQC)
 
 Now, lets rebuild the last control chart from my previous post. 
 
-```{r starting_plot}
+```{r starting_plot, warning=FALSE}
 # Generate sample data
 set.seed(20190117)
 example_df <- data_frame(values = rnorm(n=30*5, mean = 25, sd = .005),
@@ -54,18 +54,16 @@ ggQC_example <- example_df %>%
 ggQC_example
 ```
 
-You can see that I added some grouping variables to try and control the annimation, but I couldn't achieve the annimation that I was looking for. Take a look: 
+You can see that I added some grouping variables to try to control the annimation, but I couldn't get it to look right. Take a look: 
 
 ```{r take_one, message=FALSE, warning=FALSE}
 ggQC_example +
   transition_reveal(subgroup)
 ```
 
-Ok, setting the red points asside, the graph looks crazy because it seems to recalculate the control limits for each frame. Let's try making the same plot from a tidy dataset, and see if that annimates a little more nicely. 
+Ok, setting the red points asside, the graph seems to recalculate the control limits for each frame. Let's try making the same plot from a tidy dataset, and see if that annimates a little more nicely. 
 
 ```{r take_two, message=FALSE, warning=FALSE}
-# is there a way to hold the annimate for a second before it restarts?
-
 UCL <- xBar_rBar_UCL(data = example_df, value = "values", grouping = "subgroup")
 LCL <- xBar_rBar_LCL(data = example_df, value = "values", grouping = "subgroup")
 
@@ -95,6 +93,6 @@ take_two <- take_two_df %>%
 animate(take_two, end_pause = 10) # using the animate() function allows me to set the end_pause
 ```
 
-Sure enough, that worked much more nicely. The lesson-learned is that items that are calculated at the time of plotting act differently from those that are simply data being thrown on a graph. I couldn't figure out how to get `stat_QC` (which is calculated at run-time when plotting) to remain static, so I had to create a tidy dataset with all the information that I needed.
+Sure enough, that worked much more nicely. The lesson learned is that items that are calculated at the time of plotting act differently from those that are simply data being thrown on a graph. I couldn't figure out how to get `stat_QC` (which is calculated at run-time when plotting) to remain static, so I had to create a tidy dataset with all the information that I needed.
 
 Regardless, `ggannimate` makes annimations way easier than trying to creating all of those individual plots on their own and then combining them into a .gif. It would only be 32 plots if I wanted it to jump from point-to-point, but notice that the lines also get drawn rather than jumping. 
