@@ -1,5 +1,5 @@
 ---
-title: "Creating a Favicon with r"
+title: "Creating a Favicon with R"
 slug: "favicon"
 author: "Jameson Marriott"
 date: "2019-03-01"
@@ -10,7 +10,7 @@ output:
     dev: "svg"
 draft: FALSE
 tags:
-  - r
+  - R
 ---
 
 I use the [Hugo Coder](https://github.com/luizdepra/hugo-coder) theme for this website, but I don't like the default favicon, so I decided to make a new one using ggplot2. For those of you who don't know, a favicon is the little icon that shows up on your browser tab next to the website name (in most browsers).

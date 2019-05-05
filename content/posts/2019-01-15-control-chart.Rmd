@@ -10,11 +10,11 @@ output:
     dev: "svg"
 draft: FALSE
 tags:
-  - r
+  - R
   - SPC
 ---
 
-`r` is a great language for statistical process control largely because there are several packages which make it quite easy, including [qcc](https://cran.r-project.org/package=qcc), [SixSigma](https://cran.r-project.org/package=SixSigma), and a new one that I want to explore in this post called [ggQC](http://rcontrolcharts.com/). I've been using `qcc` for a while and I trust its calculations, so I'll use that to validate `ggQC`. 
+`R` is a great language for statistical process control largely because there are several packages which make it quite easy, including [qcc](https://cran.r-project.org/package=qcc), [SixSigma](https://cran.r-project.org/package=SixSigma), and a new one that I want to explore in this post called [ggQC](http://rcontrolcharts.com/). I've been using `qcc` for a while and I trust its calculations, so I'll use that to validate `ggQC`. 
 
 `ggQC` was created by Keneth Grey and I came accross it when I read his [excelent article](https://r-bar.net/xmr-limits-moving-range/) on why we use r-bar and a constant to calculate the control limits on a control chart. The advantage of `ggQC` is that it extends [ggplot2](https://ggplot2.tidyverse.org/), so that you get all of the flexibility that comes with that. 
 
@@ -116,6 +116,6 @@ ggQC_example +
   geom_point(data = violations, aes(x = Observations, y = value), color = "red")
 ```
 
-Overall I like the ggQC package. It's still an early version and has some things to work out, but I think that it's the natural progression of control charting in `r`.
+Overall I like the ggQC package. It's still an early version and has some things to work out, but I think that it's the natural progression of control charting in `R`.
 
 This post was generated with version `r packageVersion("ggQC")` of `ggQC`.

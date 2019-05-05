@@ -10,13 +10,13 @@ output:
     dev: "svg"
 draft: FALSE
 tags:
-  - r
+  - R
   - SPC
 ---
 
 
 
-<p><code>r</code> is a great language for statistical process control largely because there are several packages which make it quite easy, including <a href="https://cran.r-project.org/package=qcc">qcc</a>, <a href="https://cran.r-project.org/package=SixSigma">SixSigma</a>, and a new one that I want to explore in this post called <a href="http://rcontrolcharts.com/">ggQC</a>. I’ve been using <code>qcc</code> for a while and I trust its calculations, so I’ll use that to validate <code>ggQC</code>.</p>
+<p><code>R</code> is a great language for statistical process control largely because there are several packages which make it quite easy, including <a href="https://cran.r-project.org/package=qcc">qcc</a>, <a href="https://cran.r-project.org/package=SixSigma">SixSigma</a>, and a new one that I want to explore in this post called <a href="http://rcontrolcharts.com/">ggQC</a>. I’ve been using <code>qcc</code> for a while and I trust its calculations, so I’ll use that to validate <code>ggQC</code>.</p>
 <p><code>ggQC</code> was created by Keneth Grey and I came accross it when I read his <a href="https://r-bar.net/xmr-limits-moving-range/">excelent article</a> on why we use r-bar and a constant to calculate the control limits on a control chart. The advantage of <code>ggQC</code> is that it extends <a href="https://ggplot2.tidyverse.org/">ggplot2</a>, so that you get all of the flexibility that comes with that.</p>
 <p>First, let’s load the <code>tidyverse</code>, <code>qcc</code>, and <code>ggQC</code> (you’ll need to install these first if you haven’t already).</p>
 <pre class="r"><code>library(tidyverse)
@@ -30,9 +30,10 @@ example_df &lt;- data_frame(values = rnorm(n=30*5, mean = 25, sd = .005),
                          n = rep(1:5, each = 30)) %&gt;%
   add_row(values = rnorm(n=2*5, mean = 25 + .006, sd = .005),
           subgroup = rep(31:32, 5),
-          n = rep(1:5, each = 2))
-
-# Spread the data and plot the control chart
+          n = rep(1:5, each = 2))</code></pre>
+<pre><code>## Warning: `data_frame()` is deprecated, use `tibble()`.
+## This warning is displayed once per session.</code></pre>
+<pre class="r"><code># Spread the data and plot the control chart
 qcc_chart &lt;- example_df %&gt;%
   spread(key = n, value = values) %&gt;%
   select(-subgroup) %&gt;%
@@ -81,10 +82,11 @@ ggQC_example +
   as_data_frame() %&gt;%
   left_join(as_data_frame(qcc_chart$statistics) %&gt;% 
               mutate(Observations = row_number()), 
-            by = &quot;Observations&quot;)
-
-ggQC_example +
+            by = &quot;Observations&quot;)</code></pre>
+<pre><code>## Warning: `as_data_frame()` is deprecated, use `as_tibble()` (but mind the new semantics).
+## This warning is displayed once per session.</code></pre>
+<pre class="r"><code>ggQC_example +
   geom_point(data = violations, aes(x = Observations, y = value), color = &quot;red&quot;)</code></pre>
 <p><img src="/posts/2019-01-15-control-chart_files/figure-html/qcc_violation_workaround-1.svg" width="576" /></p>
-<p>Overall I like the ggQC package. It’s still an early version and has some things to work out, but I think that it’s the natural progression of control charting in <code>r</code>.</p>
+<p>Overall I like the ggQC package. It’s still an early version and has some things to work out, but I think that it’s the natural progression of control charting in <code>R</code>.</p>
 <p>This post was generated with version 0.0.31 of <code>ggQC</code>.</p>

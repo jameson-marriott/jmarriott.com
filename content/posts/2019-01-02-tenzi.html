@@ -10,7 +10,7 @@ output:
     dev: "svg"
 draft: FALSE
 tags:
-  - r
+  - R
 ---
 
 
@@ -23,9 +23,10 @@ tags:
 dice_rolls &lt;- data_frame(roll = sample(1:6, 10, replace = TRUE)) %&gt;%
   group_by(roll) %&gt;%
   summarize(count = n()) %&gt;%
-  arrange(desc(count))
-
-# Record the chosen number
+  arrange(desc(count))</code></pre>
+<pre><code>## Warning: `data_frame()` is deprecated, use `tibble()`.
+## This warning is displayed once per session.</code></pre>
+<pre class="r"><code># Record the chosen number
 roll_int &lt;- as.integer(dice_rolls[1, 1])
 
 # Record the number of dice rolled with the chosen number
@@ -40,7 +41,7 @@ while(count_int &lt; 10) {
     length()
   roll_count_int = roll_count_int + 1
 }</code></pre>
-<p>On this particular simulated series of rolls, it took 8 rolls to achieve ten dice with the number 4.</p>
+<p>On this particular simulated series of rolls, it took 7 rolls to achieve ten dice with the number 1.</p>
 <p>Let’s turn this code into a function that we can call over and over again to create some data we can look at to figure out how many rolls it usually takes to win.</p>
 <pre class="r"><code>round_of_tenzi &lt;- function() {
   # Roll ten dice, get the count of the number with the most rolls
@@ -82,6 +83,7 @@ for (i in 1:1e+06) {
   ylab(&quot;Occurances&quot;) +
   xlab(&quot;Number of Rolls&quot;) +
   theme_classic()</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values (geom_bar).</code></pre>
 <p><img src="/posts/2019-01-02-tenzi_files/figure-html/graph_data-1.svg" width="576" /></p>
 <p>It’s interesting that the distribution drops off so sharply after seven rolls. Let’s see what the probablility is of winning for each number of rolls.</p>
 <pre class="r"><code>rolls_df %&gt;%
