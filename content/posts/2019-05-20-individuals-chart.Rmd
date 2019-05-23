@@ -1,0 +1,70 @@
+---
+title: "Individuals Control Charts"
+slug: "individuals-control-chart"
+author: "Jameson Marriott"
+date: "2019-05-20"
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+    dev: "png"
+draft: TRUE
+tags:
+  - R
+  - SPC
+---
+
+This post is a follow-up two my two recent posts on [generating control charts in R,](https://jmarriott.com/posts/testing-ggqc/) and [animating them.](https://jmarriott.com/posts/annimate-control-chart/) One thing that I've been wondering about is how to calculate a range chart without using a package like `ggQC` or `qcc`. I knew that I could do it using a loop, but I was looking for a `dplyr` method when I stumbled on the `dplyr::lag()` function in [this article on stackoverflow.](https://stackoverflow.com/questions/21667262/how-to-find-difference-between-values-in-two-rows-in-an-r-dataframe-using-dplyr) It should work like a charm! 
+
+First, let's load the `tidyverse` and generate some sample data. 
+
+```{r startup, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+```{r sample_data}
+set.seed(1558635665)
+control_chart_tibble <- tibble(x = rnorm(n = 30, mean = 25, sd = .005))
+control_chart_tibble
+```
+
+Now we can use the `lag()` function to calculate the range between each row. 
+
+```{r}
+control_chart_tibble <- control_chart_tibble %>%
+  mutate(mr = abs(x - lag(x, 1)))
+control_chart_tibble
+```
+
+The first row under the `r` column is `NA` because the first range is between the first and second rows and it gets stored in the second row. 
+
+Now the only thing left to do is calculate the control limits for the individuals and range charts. 
+
+To estimate the variance we'll use the average of the `r` column (i.e. r-bar) and use the d2 constant as if we had two data-points for each observation. This will be more accurate than simply calculating the standard deviation using `R`'s built-in `sd()` function. Keep in mind when you do this that individuals charts like these won't work very well if your data deviates even a little bit from a normal distribution. x-bar charts where you take the average of n data-points are less sensitive to the assumption of normality because of the [central limit theorem.](https://en.wikipedia.org/wiki/Central_limit_theorem) 
+
+Ok, enough statistics. Let's do the math!
+
+```{r control-limits, warning=FALSE}
+control_chart_tibble <- control_chart_tibble %>%
+  mutate(x_cl = mean(x), # x-bar centerline
+         mr_cl  = mean(mr, na.rm = TRUE), # moving range centerline
+         x_ucl  = x_cl + 3 * mr_cl/1.1284, # x-bar UCL = x-bar + 3 * r-bar / d2
+         x_lcl  = x_cl - 3 * mr_cl/1.1284, # x-bar LCL = x-bar - 3 * r-bar / d2
+         mr_ucl = 3.2665 * mr_cl, # moving range UCL = D2 * r-bar
+         mr_lcl = 0, # moving range LCL = 0
+         n      = row_number()) %>%
+  gather(key = "type", value = "value", -n) %>%
+  mutate(chart = case_when( # Add a column to facet by
+    str_detect(type, "x") ~ "Individuals",
+    str_detect(type, "mr") ~ "Moving Range"))
+
+control_chart_tibble %>%
+  ggplot(aes(y = value, x = n, group = type)) + 
+  # the "group" aes allows us to display different data without differentiating it on the chart
+  geom_line() +
+  facet_grid(chart~., scales = "free") +
+  ggtitle("Example X-Moving Range Chart") +
+  theme_bw() +
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank())
+```
+
