@@ -1,0 +1,83 @@
+---
+title: "Individuals Control Charts"
+slug: "individuals-control-chart"
+author: "Jameson Marriott"
+date: "2019-05-28"
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+    dev: "png"
+draft: FALSE
+tags:
+  - R
+  - SPC
+---
+
+
+
+<p>This post is a follow-up two my two recent posts on <a href="https://jmarriott.com/posts/testing-ggqc/">generating control charts in R,</a> and <a href="https://jmarriott.com/posts/annimate-control-chart/">animating them.</a> One thing that I’ve been wondering about is how to calculate a range chart without using a package like <code>ggQC</code> or <code>qcc</code>. I knew that I could do it using a loop, but I was looking for a <code>dplyr</code> method when I stumbled on the <code>dplyr::lag()</code> function in <a href="https://stackoverflow.com/questions/21667262/how-to-find-difference-between-values-in-two-rows-in-an-r-dataframe-using-dplyr">this article on stackoverflow.</a> It should work like a charm!</p>
+<p>First, let’s load the <code>tidyverse</code> and generate some sample data.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre class="r"><code>set.seed(1558635665)
+control_chart_tibble &lt;- tibble(x = rnorm(n = 30, mean = 25, sd = .005))
+control_chart_tibble</code></pre>
+<pre><code>## # A tibble: 30 x 1
+##        x
+##    &lt;dbl&gt;
+##  1  25.0
+##  2  25.0
+##  3  25.0
+##  4  25.0
+##  5  25.0
+##  6  25.0
+##  7  25.0
+##  8  25.0
+##  9  25.0
+## 10  25.0
+## # ... with 20 more rows</code></pre>
+<p>Now we can use the <code>lag()</code> function to calculate the range between each row.</p>
+<pre class="r"><code>control_chart_tibble &lt;- control_chart_tibble %&gt;%
+  mutate(mr = abs(x - lag(x, 1)))
+control_chart_tibble</code></pre>
+<pre><code>## # A tibble: 30 x 2
+##        x        mr
+##    &lt;dbl&gt;     &lt;dbl&gt;
+##  1  25.0 NA       
+##  2  25.0  0.0118  
+##  3  25.0  0.00396 
+##  4  25.0  0.000981
+##  5  25.0  0.00289 
+##  6  25.0  0.00344 
+##  7  25.0  0.00420 
+##  8  25.0  0.00482 
+##  9  25.0  0.00306 
+## 10  25.0  0.000677
+## # ... with 20 more rows</code></pre>
+<p>The first row under the <code>r</code> column is <code>NA</code> because the first range is between the first and second rows and it gets stored in the second row.</p>
+<p>Now the only thing left to do is calculate the control limits for the individuals and range charts.</p>
+<p>To estimate the variance we’ll use the average of the <code>r</code> column (i.e. r-bar) and use the d2 constant as if we had two data-points for each observation. This will be more accurate than simply calculating the standard deviation using <code>R</code>’s built-in <code>sd()</code> function. Keep in mind when you do this that individuals charts like these won’t work very well if your data deviates even a little bit from a normal distribution. x-bar charts where you take the average of n data-points are less sensitive to the assumption of normality because of the <a href="https://en.wikipedia.org/wiki/Central_limit_theorem">central limit theorem.</a></p>
+<p>Ok, enough boring stuff. Let’s do the math!</p>
+<pre class="r"><code>control_chart_tibble &lt;- control_chart_tibble %&gt;%
+  mutate(x_cl = mean(x), # x-bar centerline
+         mr_cl  = mean(mr, na.rm = TRUE), # moving range centerline
+         x_ucl  = x_cl + 3 * mr_cl/1.1284, # x-bar UCL = x-bar + 3 * r-bar / d2
+         x_lcl  = x_cl - 3 * mr_cl/1.1284, # x-bar LCL = x-bar - 3 * r-bar / d2
+         mr_ucl = 3.2665 * mr_cl, # moving range UCL = D2 * r-bar
+         mr_lcl = 0, # moving range LCL = 0
+         n      = row_number()) %&gt;%
+  gather(key = &quot;type&quot;, value = &quot;value&quot;, -n) %&gt;%
+  mutate(chart = case_when( # Add a column to facet by
+    str_detect(type, &quot;x&quot;) ~ &quot;Individuals&quot;,
+    str_detect(type, &quot;mr&quot;) ~ &quot;Moving Range&quot;))
+
+control_chart_tibble %&gt;%
+  ggplot(aes(y = value, x = n, group = type)) + 
+  # the &quot;group&quot; aes allows us to display different data without differentiating it on the chart
+  geom_line() +
+  facet_grid(chart~., scales = &quot;free&quot;) +
+  ggtitle(&quot;Example X-Moving Range Chart&quot;) +
+  theme_bw() +
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank())</code></pre>
+<p><img src="/posts/2019-05-20-individuals-chart_files/figure-html/control-limits-1.png" width="576" /></p>
+<p>That’s a wrap! Let me know what you think in the comments.</p>
