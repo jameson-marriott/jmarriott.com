@@ -8,7 +8,7 @@ output:
     toc: true
     fig_width: 6
     dev: "png"
-draft: TRUE
+draft: FALSE
 tags:
   - R
   - SPC
@@ -42,7 +42,7 @@ Now the only thing left to do is calculate the control limits for the individual
 
 To estimate the variance we'll use the average of the `r` column (i.e. r-bar) and use the d2 constant as if we had two data-points for each observation. This will be more accurate than simply calculating the standard deviation using `R`'s built-in `sd()` function. Keep in mind when you do this that individuals charts like these won't work very well if your data deviates even a little bit from a normal distribution. x-bar charts where you take the average of n data-points are less sensitive to the assumption of normality because of the [central limit theorem.](https://en.wikipedia.org/wiki/Central_limit_theorem) 
 
-Ok, enough statistics. Let's do the math!
+Ok, enough boring stuff. Let's do the math!
 
 ```{r control-limits, warning=FALSE}
 control_chart_tibble <- control_chart_tibble %>%
@@ -68,3 +68,4 @@ control_chart_tibble %>%
   theme(axis.title.x = element_blank(), axis.title.y = element_blank())
 ```
 
+That's a wrap! Let me know what you think in the comments. 
