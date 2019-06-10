@@ -1,6 +1,6 @@
 baseurl = "https://jmarriott.com"
 title = "jmarriott.com"
-theme = "hugo-coder"
+theme = ["hugo-coder", "jmcustom"]
 languagecode = "en"
 defaultcontentlanguage = "en"
 
