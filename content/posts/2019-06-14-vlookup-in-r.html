@@ -1,0 +1,150 @@
+---
+title: "How to do Excel's VLOOKUP with dplyr in R"
+slug: "vlookup-in-r"
+author: "Jameson Marriott"
+date: "2019-06-20"
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+    dev: "png"
+draft: TRUE
+tags:
+  - R
+  - Data
+---
+
+
+
+<p>I started learning R back in 2016 in college thanks to a couple of my professors who used it to help me learn statistics, <a href="https://twitter.com/drgrimshaw">Dr. Grimshaw</a> and <a href="https://statistics.byu.edu/content/lawson-john-s">Dr. Lawson</a>. Thanks to the R community I’ve leared a lot more since then, but recently I did an embarressing google search for “how to do vlookup in r.”</p>
+<p>For those of you who don’t know, VLOOKUP is a function in Excel that takes two ranges, matches two of the columns, and gives you a result from a third column based on the match. There are some nuanses, like that the matching column from the “from” range has to be the first one, and the difference between approximate and exact matches, but we’ll stay out of the Excel weeds on this post. Suffice it to say that <code>dplyr</code> merges are the ticket for 90% of what VLOOKUP does and it’s way faster.</p>
+<p>This post is largely inssurance to make sure that I never make this mistake again. First, let’s load the <code>tidyverse</code> (which includes <code>dplyr</code>) and grab some sample data. I’ll also load <code>tibbletime</code> to prepare the data more easily.</p>
+<pre class="r"><code>library(tidyverse)
+library(tibbletime)</code></pre>
+<p>For some example data I hopped on to <a href="https://www.kaggle.com/">kaggle.com</a> and grabed a recent <a href="https://www.kaggle.com/se18m502/bee-hive-metrics">dataset about some behives</a> that looked interesting. For the purpose of this exercise I’m going to calculate the average daily temperature and bee departures so that we can easily merge the two together.</p>
+<pre class="r"><code>temp &lt;- read_csv(&quot;data/temperature_schwartau.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   timestamp = col_datetime(format = &quot;&quot;),
+##   temperature = col_double()
+## )</code></pre>
+<pre class="r"><code>temp</code></pre>
+<pre><code>## # A tibble: 253,430 x 2
+##    timestamp           temperature
+##    &lt;dttm&gt;                    &lt;dbl&gt;
+##  1 2017-01-01 14:10:00        NA  
+##  2 2017-01-01 14:15:00        12.3
+##  3 2017-01-01 14:20:00        12.3
+##  4 2017-01-01 14:25:00        12.3
+##  5 2017-01-01 14:30:00        12.4
+##  6 2017-01-01 14:35:00        12.4
+##  7 2017-01-01 14:40:00        12.5
+##  8 2017-01-01 14:45:00        12.5
+##  9 2017-01-01 14:50:00        12.5
+## 10 2017-01-01 14:55:00        12.5
+## # ... with 253,420 more rows</code></pre>
+<pre class="r"><code>flow &lt;- read_csv(&quot;data/flow_schwartau.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   timestamp = col_datetime(format = &quot;&quot;),
+##   flow = col_double()
+## )</code></pre>
+<pre class="r"><code>flow</code></pre>
+<pre><code>## # A tibble: 2,513,836 x 2
+##    timestamp            flow
+##    &lt;dttm&gt;              &lt;dbl&gt;
+##  1 2017-01-01 14:15:00     0
+##  2 2017-01-01 14:16:00     0
+##  3 2017-01-01 14:17:00     0
+##  4 2017-01-01 14:18:00     0
+##  5 2017-01-01 14:19:00     0
+##  6 2017-01-01 14:20:00     0
+##  7 2017-01-01 14:21:00     0
+##  8 2017-01-01 14:22:00     0
+##  9 2017-01-01 14:23:00     0
+## 10 2017-01-01 14:24:00     0
+## # ... with 2,513,826 more rows</code></pre>
+<p>To get the data ready for this demo I’m going to take the hourly average flow out of the hive (positive values) and the hourly average temperature.</p>
+<pre class="r"><code>flow &lt;- flow %&gt;%
+  drop_na() %&gt;%
+  mutate(exit_flow = case_when( # get only departures
+    flow &gt; 0 ~ flow,
+    TRUE ~ 0
+  )) %&gt;%
+  arrange(timestamp) %&gt;% # tble_time needs the timestamp to be ordered
+  tbl_time(index = timestamp) %&gt;% # convert to tble_time for ease of grouping by hour
+  collapse_by(period = &quot;hourly&quot;, clean = TRUE) %&gt;% # &quot;collapse&quot; by hour
+  group_by(timestamp) %&gt;% # group by collapsed hourly column
+  summarise(mean_exit_flow = mean(exit_flow)) # get the hourly average
+flow</code></pre>
+<pre><code>## # A time tibble: 20,953 x 2
+## # Index: timestamp
+##    timestamp           mean_exit_flow
+##    &lt;dttm&gt;                       &lt;dbl&gt;
+##  1 2017-01-01 15:00:00        0      
+##  2 2017-01-01 16:00:00        0      
+##  3 2017-01-01 17:00:00        0      
+##  4 2017-01-01 18:00:00        0      
+##  5 2017-01-01 19:00:00        0.00833
+##  6 2017-01-01 20:00:00        0      
+##  7 2017-01-01 21:00:00        0      
+##  8 2017-01-01 22:00:00        0      
+##  9 2017-01-01 23:00:00        0      
+## 10 2017-01-02 00:00:00        0      
+## # ... with 20,943 more rows</code></pre>
+<pre class="r"><code>temp &lt;- temp %&gt;%
+  drop_na() %&gt;%
+  arrange(timestamp) %&gt;%
+  tbl_time(index = timestamp) %&gt;%
+  collapse_by(period = &quot;hourly&quot;, clean = TRUE) %&gt;%
+  group_by(timestamp) %&gt;%
+  summarise(mean_temp = mean(temperature))
+temp</code></pre>
+<pre><code>## # A time tibble: 20,953 x 2
+## # Index: timestamp
+##    timestamp           mean_temp
+##    &lt;dttm&gt;                  &lt;dbl&gt;
+##  1 2017-01-01 15:00:00      12.4
+##  2 2017-01-01 16:00:00      13.4
+##  3 2017-01-01 17:00:00      16.7
+##  4 2017-01-01 18:00:00      16.4
+##  5 2017-01-01 19:00:00      13.7
+##  6 2017-01-01 20:00:00      14.0
+##  7 2017-01-01 21:00:00      12.4
+##  8 2017-01-01 22:00:00      17.3
+##  9 2017-01-01 23:00:00      17.8
+## 10 2017-01-02 00:00:00      20.0
+## # ... with 20,943 more rows</code></pre>
+<p>You can see that the first column of both tables match exactly, with one row for each hour. The left column of each table do not match. This is one senario that I might use VLOOKUP for in Excel, especially if the data isn’t ordered, or if I don’t know if both datasets are complete.</p>
+<p>As a side note, the flow dataset has 2.5 million rows and the temperature dataset has 250 thousand rows. Summarizing these by hour into tables of about 21 thousand rows and then combining them would be a trying task for Excel, but for R it’s a breeze.</p>
+<p>To combine these two in R, I would use a <code>join</code> function from <code>dplyr</code>. VLOOKUP works like <code>left_join()</code> or <code>right_join()</code> because it looks for matches from one table in another table. If there aren’t any matches, it returns with an error. We also have the option to do a <code>full_join()</code> which returns all rows from both tables and with <code>NA</code> wherever there isn’t a match or <code>inner_join()</code> which only returns rows where there are matches from both tables.</p>
+<p>Since I have created a nice clean dataset with matching timestamp columns, I will get the same result no matter which <code>join</code> function I use. <code>dplyr</code> will try to guess which column you want to join by and return its guess as a message unless you specify which column you want it to use with <code>by =</code>.</p>
+<pre class="r"><code>joined_table &lt;- flow %&gt;%
+  left_join(temp, by = &quot;timestamp&quot;)
+joined_table</code></pre>
+<pre><code>## # A time tibble: 20,953 x 3
+## # Index: timestamp
+##    timestamp           mean_exit_flow mean_temp
+##    &lt;dttm&gt;                       &lt;dbl&gt;     &lt;dbl&gt;
+##  1 2017-01-01 15:00:00        0            12.4
+##  2 2017-01-01 16:00:00        0            13.4
+##  3 2017-01-01 17:00:00        0            16.7
+##  4 2017-01-01 18:00:00        0            16.4
+##  5 2017-01-01 19:00:00        0.00833      13.7
+##  6 2017-01-01 20:00:00        0            14.0
+##  7 2017-01-01 21:00:00        0            12.4
+##  8 2017-01-01 22:00:00        0            17.3
+##  9 2017-01-01 23:00:00        0            17.8
+## 10 2017-01-02 00:00:00        0            20.0
+## # ... with 20,943 more rows</code></pre>
+<p>Pretty easy! Preparing this dataset took more work than joining it, but there are a lot of cases where the data will lend itself to a join right out of the box.</p>
+<p>Since we’ve made it this far, let’s take a look at the relationship between the hourly average number of bees exiting the hive and the hourly average temperature.</p>
+<pre class="r"><code>joined_table %&gt;%
+  ggplot(aes(x = mean_exit_flow, y = mean_temp)) +
+  geom_point(alpha = .05) +
+  labs(title = &quot;Hourly Average Schwartau Behive Activity&quot;, subtitle = &quot;2017-01-01 through 2019-05-31&quot;, caption = &quot;Data source: kaggle.com/se18m502/bee-hive-metrics&quot;) +
+  xlab(&quot;Average Hourly Exit&quot;) +
+  ylab(&quot;Average Hourly Temperature (C)&quot;) +
+  theme_bw()</code></pre>
+<p><img src="/posts/2019-06-14-vlookup-in-r_files/figure-html/unnamed-chunk-4-1.png" width="576" /></p>
+<p>It looks like it needs to be about 10 C (50 F) before any bees want to head outdoors, and above 30 C (86 F) there is a huge spike in activity.</p>
