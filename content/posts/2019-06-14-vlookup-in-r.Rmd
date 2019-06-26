@@ -1,8 +1,8 @@
 ---
-title: "How to do Excel's VLOOKUP with dplyr in R"
+title: "VLOOKUP in R with Schwartau Behive Data"
 slug: "vlookup-in-r"
 author: "Jameson Marriott"
-date: "2019-06-20"
+date: "2019-06-26"
 output:
   blogdown::html_page:
     toc: true
@@ -14,11 +14,11 @@ tags:
   - Data
 ---
 
-I started learning R back in 2016 in college thanks to a couple of my professors who used it to help me learn statistics, [Dr. Grimshaw](https://twitter.com/drgrimshaw) and [Dr. Lawson](https://statistics.byu.edu/content/lawson-john-s). Thanks to the R community I've leared a lot more since then, but recently I did an embarressing google search for "how to do vlookup in r." 
+I started learning R back in 2016 in college thanks to a couple of my professors who used it to teach statistics, [Dr. Grimshaw](https://twitter.com/drgrimshaw) and [Dr. Lawson](https://statistics.byu.edu/content/lawson-john-s). Thanks to the R community I've leared a lot more since then, but recently I did an embarressing google search for "how to do VLOOKUP in r." 
 
 For those of you who don't know, VLOOKUP is a function in Excel that takes two ranges, matches two of the columns, and gives you a result from a third column based on the match. There are some nuanses, like that the matching column from the "from" range has to be the first one, and the difference between approximate and exact matches, but we'll stay out of the Excel weeds on this post. Suffice it to say that `dplyr` merges are the ticket for 90% of what VLOOKUP does and it's way faster. 
 
-This post is largely inssurance to make sure that I never make this mistake again. First, let's load the `tidyverse` (which includes `dplyr`) and grab some sample data. I'll also load `tibbletime` to prepare the data more easily. 
+This post is largely insurance to make sure that I never make this mistake again. First, let's load the `tidyverse` (which includes `dplyr`) and grab some sample data. I'll also load `tibbletime` to prepare the data more easily. 
 
 ```{r startup, message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -28,6 +28,7 @@ library(tibbletime)
 For some example data I hopped on to [kaggle.com](https://www.kaggle.com/) and grabed a recent [dataset about some behives](https://www.kaggle.com/se18m502/bee-hive-metrics) that looked interesting. For the purpose of this exercise I'm going to calculate the average daily temperature and bee departures so that we can easily merge the two together. 
 
 ```{r}
+# can I pull the data directly from kaggle? 
 temp <- read_csv("data/temperature_schwartau.csv")
 temp
 flow <- read_csv("data/flow_schwartau.csv")
@@ -60,7 +61,7 @@ temp <- temp %>%
 temp
 ```
 
-You can see that the first column of both tables match exactly, with one row for each hour. The left column of each table do not match. This is one senario that I might use VLOOKUP for in Excel, especially if the data isn't ordered, or if I don't know if both datasets are complete. 
+You can see that the first column of both tables match exactly, with one row for each hour and the right column of each table do not match. This is one senario that I might use VLOOKUP for in Excel, especially if the data isn't ordered, or if I don't know if both datasets are complete. 
 
 As a side note, the flow dataset has 2.5 million rows and the temperature dataset has 250 thousand rows. Summarizing these by hour into tables of about 21 thousand rows and then combining them would be a trying task for Excel, but for R it's a breeze. 
 
@@ -88,4 +89,24 @@ joined_table %>%
   theme_bw()
 ```
 
-It looks like it needs to be about 10 C (50 F) before any bees want to head outdoors, and above 30 C (86 F) there is a huge spike in activity. 
+It looks like it needs to be about 10 C (50 F) before these bees want to head outdoors, and above 30 C (86 F) there is a huge spike in activity. 
+
+There is a pretty thick line of inactivity at all temperatures, though, which makes me wonder if the behive has been active the whole time it was being observed. Let's make a plot of activity over time. 
+
+```{r}
+joined_table %>%
+  ggplot(aes(x = timestamp, y = mean_exit_flow, color = mean_temp)) +
+  geom_point() +
+  labs(title = "Hourly Average Schwartau Behive Activity", 
+       subtitle = "2017-01-01 through 2019-05-31", 
+       caption = "Data source: kaggle.com/se18m502/bee-hive-metrics",
+       color = "Average\nTemp\n(C)") +
+  xlab("Time") +
+  ylab("Average Hourly Exit") +
+  scale_colour_gradient(low = "black", high = "red") +
+  theme_bw()
+```
+
+It looks like the behive activity is function of both temperature and time of year and there are some times of year where their are bees exiting the hive 24 hours per day. 
+
+There you have it! While there's nothing wrong with using Excel, especially when it's the medium that your colleagues are familiar with, R is much faster, and more reproducible and flexible. I can easily read through the code that I just wrote and follow what's happening, but when I get an Excel workbook with similar calculations, it takes quite a bit of time to figure out how the author did everything because formulas are hidden by design and are spread over so many cells. 
