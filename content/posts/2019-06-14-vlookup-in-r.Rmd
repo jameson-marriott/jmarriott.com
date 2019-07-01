@@ -1,31 +1,31 @@
 ---
-title: "VLOOKUP in R with Schwartau Behive Data"
+title: "VLOOKUP in R with Schwartau Beehive Data"
 slug: "vlookup-in-r"
 author: "Jameson Marriott"
-date: "2019-06-26T06:45:00-06:00"
+date: "2019-07-01T06:37:00-06:00"
 output:
   blogdown::html_page:
     toc: true
     fig_width: 6
     dev: "png"
-draft: TRUE
+draft: FALSE
 tags:
   - R
   - Data
 ---
 
-I started learning R back in 2016 in college thanks to a couple of my professors who used it to teach statistics: [Dr. Grimshaw](https://twitter.com/drgrimshaw) and [Dr. Lawson](https://statistics.byu.edu/content/lawson-john-s). Thanks to the R community I've leared a lot more since then, but recently I did an embarressing google search for "how to do VLOOKUP in r." 
+I started learning R back in 2016 in college thanks to a couple of my professors who used it to teach statistics: [Dr. Grimshaw](https://twitter.com/drgrimshaw) and [Dr. Lawson](https://statistics.byu.edu/content/lawson-john-s). Thanks to the R community I've learned a lot more since then, but recently I did an embarrassing Google search for "how to do VLOOKUP in r." 
 
 For those of you who don't know, VLOOKUP is a function in Excel that takes two ranges, matches two of the columns, and gives you a result from a third column based on the match. There are some nuances, like that the matching column in the "from" range has to be the first one, and the difference between approximate and exact matches, but we'll stay out of the Excel weeds on this post. Suffice it to say that `dplyr` merges are the ticket for 90% of what VLOOKUP gets used for and it's way faster. 
 
-This post is largely insurance to make sure that I never do that google search again. First, let's load the `tidyverse` (which includes `dplyr`) and grab some sample data. I'll also load `tibbletime` to prepare the data more easily. 
+This post is largely insurance to make sure that I never do that Google search again. First, I'll load the `tidyverse` (which includes `dplyr`) and grab some sample data. I'll also load `tibbletime` to prepare the data more easily. 
 
 ```{r startup, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(tibbletime)
 ```
 
-For some example data I hopped on to [kaggle](https://www.kaggle.com/) and grabed a recent [dataset about some behives](https://www.kaggle.com/se18m502/bee-hive-metrics) that looked interesting. For the purpose of this exercise I'm going to calculate the average daily temperature and bee departures so that we can easily merge the two together. 
+For some example data I hopped on to [kaggle](https://www.kaggle.com/) and grabbed a recent [dataset about some behives](https://www.kaggle.com/se18m502/bee-hive-metrics) that looked interesting. For the purpose of this exercise I'm going to calculate the average daily temperature and bee departures so that we can easily merge the two together. 
 
 ```{r}
 temp <- read_csv("data/temperature_schwartau.csv")
@@ -60,11 +60,11 @@ temp <- temp %>%
 temp
 ```
 
-You can see that the first column of both tables match exactly, with one row for each hour and the right column of each table do not match. This is one senario that I might use VLOOKUP for in Excel, especially if the data isn't ordered, or if I don't know if both datasets are complete. 
+You can see that the first column of both tables match exactly, with one row for each hour and the right column of each table do not match. This is one scenario that I might use VLOOKUP for in Excel, especially if the data isn't ordered, or if I don't know if both datasets are complete. 
 
 As a side note, the flow dataset has 2.5 million rows and the temperature dataset has 250 thousand rows. Summarizing these by hour into tables of about 21 thousand rows and then combining them would be a trying task for Excel, but for R it's a breeze. 
 
-To combine these two in R, I would use a `join` function from `dplyr`. VLOOKUP works like `left_join()` or `right_join()` because it looks for matches from one table in another table. If there aren't any matches, it returns with an error. We also have the option to do a `full_join()` which returns all rows from both tables and with `NA` wherever there isn't a match or `inner_join()` which only returns rows where there are matches from both tables. 
+To combine these two in R, I will use a `join` function from `dplyr`. VLOOKUP works like `left_join()` or `right_join()` because it looks for matches from one table in another table. If there aren't any matches, it returns with an error. We also have the option to do a `full_join()` which returns all rows from both tables and with `NA` wherever there isn't a match or `inner_join()` which only returns rows where there are matches from both tables. 
 
 Since I have created a nice clean dataset with matching timestamp columns, I will get the same result no matter which `join` function I use. `dplyr` will try to guess which column I want to join by and return its guess as a message unless I specify which column I want it to use with `by =`. 
 
@@ -82,7 +82,7 @@ Since we've made it this far, let's take a look at the relationship between the 
 joined_table %>%
   ggplot(aes(x = mean_exit_flow, y = mean_temp)) +
   geom_point(alpha = .05) +
-  labs(title = "Hourly Average Schwartau Behive Activity", subtitle = "2017-01-01 through 2019-05-31", caption = "Data source: kaggle.com/se18m502/bee-hive-metrics") +
+  labs(title = "Hourly Average Schwartau Beehive Activity", subtitle = "2017-01-01 through 2019-05-31", caption = "Data source: kaggle.com/se18m502/bee-hive-metrics") +
   xlab("Average Hourly Exit") +
   ylab("Average Hourly Temperature (C)") +
   theme_bw()
@@ -90,13 +90,13 @@ joined_table %>%
 
 It looks like it needs to be about 10 C (50 F) before these bees want to head outdoors, and above 30 C (86 F) there is a huge spike in activity. 
 
-There is a pretty thick line of inactivity at all temperatures, though, which makes me wonder if the behive has been active the whole time it was being observed. Let's make a plot of activity over time. 
+There is a pretty thick line of inactivity at all temperatures, though, which makes me wonder if the beehive has been active the whole time it was being observed. Let's make a plot of activity over time. 
 
 ```{r}
 joined_table %>%
   ggplot(aes(x = timestamp, y = mean_exit_flow, color = mean_temp)) +
   geom_point() +
-  labs(title = "Hourly Average Schwartau Behive Activity", 
+  labs(title = "Hourly Average Schwartau Beehive Activity", 
        subtitle = "2017-01-01 through 2019-05-31", 
        caption = "Data source: kaggle.com/se18m502/bee-hive-metrics",
        color = "Average\nTemp\n(C)") +
@@ -106,6 +106,6 @@ joined_table %>%
   theme_bw()
 ```
 
-As I expected, the behive activity is function of both temperature and time of year. Also, there are some times of year where there are bees exiting the hive twenty-four hours per day. 
+As I expected, the beehive activity is function of both temperature and time of year. Also, there are some times of year where there are bees exiting the hive twenty-four hours per day. 
 
 There you have it! While there's nothing wrong with using Excel, especially when it's the medium that your colleagues are familiar with, R is much faster, and more reproducible and flexible. I can easily read through the code that I just wrote and follow what's happening, but when I get an Excel workbook with similar calculations, it takes quite a bit of time to figure out what's going on. 

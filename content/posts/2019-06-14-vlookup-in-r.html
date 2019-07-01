@@ -1,14 +1,14 @@
 ---
-title: "VLOOKUP in R with Schwartau Behive Data"
+title: "VLOOKUP in R with Schwartau Beehive Data"
 slug: "vlookup-in-r"
 author: "Jameson Marriott"
-date: "2019-06-26T06:45:00-06:00"
+date: "2019-07-01T06:37:00-06:00"
 output:
   blogdown::html_page:
     toc: true
     fig_width: 6
     dev: "png"
-draft: TRUE
+draft: FALSE
 tags:
   - R
   - Data
@@ -16,12 +16,12 @@ tags:
 
 
 
-<p>I started learning R back in 2016 in college thanks to a couple of my professors who used it to teach statistics: <a href="https://twitter.com/drgrimshaw">Dr. Grimshaw</a> and <a href="https://statistics.byu.edu/content/lawson-john-s">Dr. Lawson</a>. Thanks to the R community I’ve leared a lot more since then, but recently I did an embarressing google search for “how to do VLOOKUP in r.”</p>
+<p>I started learning R back in 2016 in college thanks to a couple of my professors who used it to teach statistics: <a href="https://twitter.com/drgrimshaw">Dr. Grimshaw</a> and <a href="https://statistics.byu.edu/content/lawson-john-s">Dr. Lawson</a>. Thanks to the R community I’ve learned a lot more since then, but recently I did an embarrassing Google search for “how to do VLOOKUP in r.”</p>
 <p>For those of you who don’t know, VLOOKUP is a function in Excel that takes two ranges, matches two of the columns, and gives you a result from a third column based on the match. There are some nuances, like that the matching column in the “from” range has to be the first one, and the difference between approximate and exact matches, but we’ll stay out of the Excel weeds on this post. Suffice it to say that <code>dplyr</code> merges are the ticket for 90% of what VLOOKUP gets used for and it’s way faster.</p>
-<p>This post is largely insurance to make sure that I never do that google search again. First, let’s load the <code>tidyverse</code> (which includes <code>dplyr</code>) and grab some sample data. I’ll also load <code>tibbletime</code> to prepare the data more easily.</p>
+<p>This post is largely insurance to make sure that I never do that Google search again. First, I’ll load the <code>tidyverse</code> (which includes <code>dplyr</code>) and grab some sample data. I’ll also load <code>tibbletime</code> to prepare the data more easily.</p>
 <pre class="r"><code>library(tidyverse)
 library(tibbletime)</code></pre>
-<p>For some example data I hopped on to <a href="https://www.kaggle.com/">kaggle</a> and grabed a recent <a href="https://www.kaggle.com/se18m502/bee-hive-metrics">dataset about some behives</a> that looked interesting. For the purpose of this exercise I’m going to calculate the average daily temperature and bee departures so that we can easily merge the two together.</p>
+<p>For some example data I hopped on to <a href="https://www.kaggle.com/">kaggle</a> and grabbed a recent <a href="https://www.kaggle.com/se18m502/bee-hive-metrics">dataset about some behives</a> that looked interesting. For the purpose of this exercise I’m going to calculate the average daily temperature and bee departures so that we can easily merge the two together.</p>
 <pre class="r"><code>temp &lt;- read_csv(&quot;data/temperature_schwartau.csv&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
@@ -115,9 +115,9 @@ temp</code></pre>
 ##  9 2017-01-01 23:00:00      17.8
 ## 10 2017-01-02 00:00:00      20.0
 ## # ... with 20,943 more rows</code></pre>
-<p>You can see that the first column of both tables match exactly, with one row for each hour and the right column of each table do not match. This is one senario that I might use VLOOKUP for in Excel, especially if the data isn’t ordered, or if I don’t know if both datasets are complete.</p>
+<p>You can see that the first column of both tables match exactly, with one row for each hour and the right column of each table do not match. This is one scenario that I might use VLOOKUP for in Excel, especially if the data isn’t ordered, or if I don’t know if both datasets are complete.</p>
 <p>As a side note, the flow dataset has 2.5 million rows and the temperature dataset has 250 thousand rows. Summarizing these by hour into tables of about 21 thousand rows and then combining them would be a trying task for Excel, but for R it’s a breeze.</p>
-<p>To combine these two in R, I would use a <code>join</code> function from <code>dplyr</code>. VLOOKUP works like <code>left_join()</code> or <code>right_join()</code> because it looks for matches from one table in another table. If there aren’t any matches, it returns with an error. We also have the option to do a <code>full_join()</code> which returns all rows from both tables and with <code>NA</code> wherever there isn’t a match or <code>inner_join()</code> which only returns rows where there are matches from both tables.</p>
+<p>To combine these two in R, I will use a <code>join</code> function from <code>dplyr</code>. VLOOKUP works like <code>left_join()</code> or <code>right_join()</code> because it looks for matches from one table in another table. If there aren’t any matches, it returns with an error. We also have the option to do a <code>full_join()</code> which returns all rows from both tables and with <code>NA</code> wherever there isn’t a match or <code>inner_join()</code> which only returns rows where there are matches from both tables.</p>
 <p>Since I have created a nice clean dataset with matching timestamp columns, I will get the same result no matter which <code>join</code> function I use. <code>dplyr</code> will try to guess which column I want to join by and return its guess as a message unless I specify which column I want it to use with <code>by =</code>.</p>
 <pre class="r"><code>joined_table &lt;- flow %&gt;%
   left_join(temp, by = &quot;timestamp&quot;)
@@ -142,17 +142,17 @@ joined_table</code></pre>
 <pre class="r"><code>joined_table %&gt;%
   ggplot(aes(x = mean_exit_flow, y = mean_temp)) +
   geom_point(alpha = .05) +
-  labs(title = &quot;Hourly Average Schwartau Behive Activity&quot;, subtitle = &quot;2017-01-01 through 2019-05-31&quot;, caption = &quot;Data source: kaggle.com/se18m502/bee-hive-metrics&quot;) +
+  labs(title = &quot;Hourly Average Schwartau Beehive Activity&quot;, subtitle = &quot;2017-01-01 through 2019-05-31&quot;, caption = &quot;Data source: kaggle.com/se18m502/bee-hive-metrics&quot;) +
   xlab(&quot;Average Hourly Exit&quot;) +
   ylab(&quot;Average Hourly Temperature (C)&quot;) +
   theme_bw()</code></pre>
 <p><img src="/posts/2019-06-14-vlookup-in-r_files/figure-html/unnamed-chunk-4-1.png" width="576" /></p>
 <p>It looks like it needs to be about 10 C (50 F) before these bees want to head outdoors, and above 30 C (86 F) there is a huge spike in activity.</p>
-<p>There is a pretty thick line of inactivity at all temperatures, though, which makes me wonder if the behive has been active the whole time it was being observed. Let’s make a plot of activity over time.</p>
+<p>There is a pretty thick line of inactivity at all temperatures, though, which makes me wonder if the beehive has been active the whole time it was being observed. Let’s make a plot of activity over time.</p>
 <pre class="r"><code>joined_table %&gt;%
   ggplot(aes(x = timestamp, y = mean_exit_flow, color = mean_temp)) +
   geom_point() +
-  labs(title = &quot;Hourly Average Schwartau Behive Activity&quot;, 
+  labs(title = &quot;Hourly Average Schwartau Beehive Activity&quot;, 
        subtitle = &quot;2017-01-01 through 2019-05-31&quot;, 
        caption = &quot;Data source: kaggle.com/se18m502/bee-hive-metrics&quot;,
        color = &quot;Average\nTemp\n(C)&quot;) +
@@ -161,5 +161,5 @@ joined_table</code></pre>
   scale_colour_gradient(low = &quot;black&quot;, high = &quot;red&quot;) +
   theme_bw()</code></pre>
 <p><img src="/posts/2019-06-14-vlookup-in-r_files/figure-html/unnamed-chunk-5-1.png" width="576" /></p>
-<p>As I expected, the behive activity is function of both temperature and time of year. Also, there are some times of year where there are bees exiting the hive twenty-four hours per day.</p>
+<p>As I expected, the beehive activity is function of both temperature and time of year. Also, there are some times of year where there are bees exiting the hive twenty-four hours per day.</p>
 <p>There you have it! While there’s nothing wrong with using Excel, especially when it’s the medium that your colleagues are familiar with, R is much faster, and more reproducible and flexible. I can easily read through the code that I just wrote and follow what’s happening, but when I get an Excel workbook with similar calculations, it takes quite a bit of time to figure out what’s going on.</p>
