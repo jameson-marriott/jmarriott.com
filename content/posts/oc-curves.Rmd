@@ -1,0 +1,59 @@
+---
+title: "Modeling Operating Characteristic Curves in R"
+slug: "oc-curves"
+author: "Jameson Marriott"
+date: "2019-09-13T06:37:00-06:00"
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+    dev: "png"
+draft: TRUE
+tags:
+  - R
+  - Data
+  - Sampling
+---
+
+
+
+```{r startup, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(AcceptanceSampling)
+```
+
+Before we setup a simulation, let's us the `AcceptanceSampling` package to generate an OC curve for us. 
+
+```{r oc_curve}
+oc_obj <- AcceptanceSampling::OC2c(n = 13, c = 0)
+plot(oc_obj, xlim = c(0, .5))
+```
+
+Notice that with c = 0, which is becoming the standard in inspection sampling plans, the OC curve doesn't have the usual backwards "S" shape, but instead takes an imidiate dive down from the 100% probability of acceptance.
+
+The first thing that I want to do is simulate the traditional OC curve that was so easily provided by the `AcceptanceSampling` package. 
+
+```{r}
+sim1 <- tibble(`Percent Defective` = rep(seq(0, .5, .01), each = 100000)) %>%
+  mutate(`n = 05`  = map(`Percent Defective`, rbinom, n = 5,  size = 1), # prob = `Percent Defective`
+         `n = 10` = map(`Percent Defective`, rbinom, n = 10, size = 1), # prob = `Percent Defective`
+         `n = 15` = map(`Percent Defective`, rbinom, n = 15, size = 1), # prob = `Percent Defective`
+         `n = 20` = map(`Percent Defective`, rbinom, n = 20, size = 1)) %>% # prob = `Percent Defective`
+  gather(key = n, value = Sample, - `Percent Defective`) %>%
+  mutate(`Probability of Acceptance` = map_int(Sample, max)) %>%
+  group_by(`Percent Defective`, n) %>%
+  summarise(`Mean Probability of Acceptance` = 1 - mean(`Probability of Acceptance`))
+
+sim1 %>%
+  ggplot(aes(x = `Percent Defective`, y = `Mean Probability of Acceptance`, color = n)) +
+  geom_point(alpha = .5) +
+  geom_line() +
+  labs(title = "Simulated OC Curve", 
+       subtitle = "c = 0",
+       caption = "jmarriott.com") +
+  ylab("Probability of Acceptance") +
+  xlab("Percent Defective") +
+  theme_bw()
+```
+
+Using `each = 100000` makes the graph look nice and smooth, but otherwise doesn't seem to be much of an improvement over `each = 10000` or even `each = 1000` and it takes a lot longer to run. 

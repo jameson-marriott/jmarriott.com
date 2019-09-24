@@ -1,0 +1,49 @@
+---
+title: "Modeling Operating Characteristic Curves in R"
+slug: "oc-curves"
+author: "Jameson Marriott"
+date: "2019-09-13T06:37:00-06:00"
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+    dev: "png"
+draft: TRUE
+tags:
+  - R
+  - Data
+  - Sampling
+---
+
+
+
+<pre class="r"><code>library(tidyverse)
+library(AcceptanceSampling)</code></pre>
+<p>Before we setup a simulation, let’s us the <code>AcceptanceSampling</code> package to generate an OC curve for us.</p>
+<pre class="r"><code>oc_obj &lt;- AcceptanceSampling::OC2c(n = 13, c = 0)
+plot(oc_obj, xlim = c(0, .5))</code></pre>
+<p><img src="/posts/oc-curves_files/figure-html/oc_curve-1.png" width="576" /></p>
+<p>Notice that with c = 0, which is becoming the standard in inspection sampling plans, the OC curve doesn’t have the usual backwards “S” shape, but instead takes an imidiate dive down from the 100% probability of acceptance.</p>
+<p>The first thing that I want to do is simulate the traditional OC curve that was so easily provided by the <code>AcceptanceSampling</code> package.</p>
+<pre class="r"><code>sim1 &lt;- tibble(`Percent Defective` = rep(seq(0, .5, .01), each = 100000)) %&gt;%
+  mutate(`n = 05`  = map(`Percent Defective`, rbinom, n = 5,  size = 1), # prob = `Percent Defective`
+         `n = 10` = map(`Percent Defective`, rbinom, n = 10, size = 1), # prob = `Percent Defective`
+         `n = 15` = map(`Percent Defective`, rbinom, n = 15, size = 1), # prob = `Percent Defective`
+         `n = 20` = map(`Percent Defective`, rbinom, n = 20, size = 1)) %&gt;% # prob = `Percent Defective`
+  gather(key = n, value = Sample, - `Percent Defective`) %&gt;%
+  mutate(`Probability of Acceptance` = map_int(Sample, max)) %&gt;%
+  group_by(`Percent Defective`, n) %&gt;%
+  summarise(`Mean Probability of Acceptance` = 1 - mean(`Probability of Acceptance`))
+
+sim1 %&gt;%
+  ggplot(aes(x = `Percent Defective`, y = `Mean Probability of Acceptance`, color = n)) +
+  geom_point(alpha = .5) +
+  geom_line() +
+  labs(title = &quot;Simulated OC Curve&quot;, 
+       subtitle = &quot;c = 0&quot;,
+       caption = &quot;jmarriott.com&quot;) +
+  ylab(&quot;Probability of Acceptance&quot;) +
+  xlab(&quot;Percent Defective&quot;) +
+  theme_bw()</code></pre>
+<p><img src="/posts/oc-curves_files/figure-html/unnamed-chunk-1-1.png" width="576" /></p>
+<p>Using <code>each = 100000</code> makes the graph look nice and smooth, but otherwise doesn’t seem to be much of an improvement over <code>each = 10000</code> or even <code>each = 1000</code> and it takes a lot longer to run.</p>
