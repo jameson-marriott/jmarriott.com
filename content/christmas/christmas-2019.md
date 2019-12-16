@@ -29,7 +29,7 @@ draft = false
 
 <img src="http://jmarriott.com/images/jem2019.jpg" alt="Jem 2019 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="30%" height="auto"/>
 
-**Jem (2)**: Nope-er, book wanter, finally sleeping through the night-er, fuzz head, bottomless pit, follow in Charlie's cheese-loving steps-er, camping champ, hugger, double dipper
+**Jem (2)**: Nope-er, book wanter, finally sleeping through the night-er, fuzz head, bottomless pit, follow in Charlie's cheese-loving steps-er, camping champ, hugger, double dipper, bruiser
 
 <div style = "clear:both"></div>
 
