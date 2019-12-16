@@ -17,7 +17,7 @@ draft = false
 
 <img src="https://jmarriott.com/images/jess2019.jpg" alt="Jess 2019 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="30%" height="auto"/>
 
-**Jess (31)**: eight hours of sleep lover!, Homeowner, master packer, cleaner, pregnant again-er, biker, hiker, 20 miles in Zion National Park anniversary-er, ward baby blanket maker, Primary secretary
+**Jess (31)**: Eight hours of sleep lover!, homeowner, master packer, cleaner, pregnant again-er, biker, hiker, 20 miles in Zion National Park anniversary-er, ward baby blanket maker, Primary secretary, pro honey-do list maker, Jem's favorite
 
 <div style = "clear:both"></div>
 
