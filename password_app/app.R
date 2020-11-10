@@ -49,31 +49,22 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-    #gutenberg_book <- reactive({
-    #    gutenberg_works(title == input$book_title) %>%
-    #        gutenberg_download() %>%
-    #        unnest_tokens(word, text) %>% # turn the text into a single column of words
-    #        mutate(word = str_extract(string = word, pattern = "[[:alpha:]]+")) %>% # remove any non-alphanumeric characters. 
-    #        select(word) %>% # get rid of the extra columns
-    #        unique() %>% # get rid of duplicate words
-    #        anti_join(stop_words, by = "word") %>% # get rid of boring, "stop" words
-    #        drop_na() %>% # drop anything that didn't make it through cleanly
-    #        unlist()
-    #})
-    # re-downloads the book every time a new number of words in selected - should not do that. 
-    output$password <- renderText({
-        gutenberg_works(title == input$book_title) %>%
-            gutenberg_download() %>%
+    gutenberg_book <- reactive({
+        gutenberg_works(title == input$book_title) %>% # get the gutenberg id
+            gutenberg_download() %>% 
             unnest_tokens(word, text) %>% # turn the text into a single column of words
             mutate(word = str_extract(string = word, pattern = "[[:alpha:]]+")) %>% # remove any non-alphanumeric characters. 
             select(word) %>% # get rid of the extra columns
             unique() %>% # get rid of duplicate words
             anti_join(stop_words, by = "word") %>% # get rid of boring, "stop" words
             drop_na() %>% # drop anything that didn't make it through cleanly
-            unlist() %>% # turn the column into a vector that sample knows what to do with
+            unlist()
+    })
+    # re-downloads the book every time a new number of words in selected - should not do that. 
+    output$password <- renderText({
+        gutenberg_book() %>%
             sample(input$number_of_words) %>% # chose four words at random
             paste0() # drop the names
-        #c("this is a test", "and another test")
     })
 }
 
