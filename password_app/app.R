@@ -26,23 +26,25 @@ ui <- fluidPage(
     # Application title
     titlePanel("XKCD-Inspired, Gutenberg-Sourced Passwords"),
 
-    # Sidebar with a slider input for number of words
-    sidebarLayout(
-        sidebarPanel(
-            selectizeInput("book_title", 
-                           "Book Title",
-                           titles,
-                           "Pride and Prejudice"),
-            sliderInput("number_of_words",
-                        "Number of words",
-                        min = 1,
-                        max = 10,
-                        value = 4)
+    verticalLayout(
+        fluidRow(
+            column(width = 4, offset = 1,
+                   selectizeInput("book_title", 
+                                  "Book Title",
+                                  titles,
+                                  "Pride and Prejudice"),
+                   sliderInput("number_of_words",
+                               "Number of words",
+                               min = 1,
+                               max = 10,
+                               value = 4))
         ),
 
         # Show the password
-        mainPanel(
-           textOutput("password")
+        fluidRow(
+            column(width = 4, offset = 1,
+                   textOutput("password")
+                   )
         )
     )
 )
@@ -60,7 +62,7 @@ server <- function(input, output) {
             drop_na() %>% # drop anything that didn't make it through cleanly
             unlist()
     })
-    # re-downloads the book every time a new number of words in selected - should not do that. 
+     
     output$password <- renderText({
         gutenberg_book() %>%
             sample(input$number_of_words) %>% # chose four words at random
