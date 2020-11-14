@@ -8,6 +8,7 @@
 #
 
 library(shiny)
+library(shinythemes)
 library(gutenbergr)
 library(dplyr)
 library(tidyr)
@@ -21,12 +22,21 @@ titles <- gutenberg_works(only_text = TRUE) %>%
 data("stop_words")
 
 # Define UI for application that draws a histogram
-ui <- fluidPage(
-
-    # Application title
-    titlePanel("XKCD-Inspired, Gutenberg-Sourced Passwords"),
-
+ui <- fluidPage(theme = shinytheme("cerulean"),
+                
     verticalLayout(
+        fluidRow(
+            column(width = 8, offset = 1,
+                   # Application title
+                   titlePanel(title = "XKCD-Inspired, Gutenberg-Sourced Passwords"),
+                   p("This web-app lets you generate passwords inspired by ",
+                      a(href = "https://xkcd.com/936/", "this xkcd comic."),
+                      br(),
+                      "First select a book from ",
+                      a(href = "https://www.gutenberg.org/", "Project Gutenberg"),
+                      " and then chose the number of words you want to use from that book for your password.")
+                   ),
+        ),
         fluidRow(
             column(width = 4, offset = 1,
                    selectizeInput("book_title", 
@@ -42,14 +52,15 @@ ui <- fluidPage(
 
         # Show the password
         fluidRow(
-            column(width = 4, offset = 1,
-                   textOutput("password")
-                   )
+            column(width = 6, offset = 1,
+                   tags$hr(),
+                   textOutput("password_no_spaces", container = tags$p)
+            )
         )
     )
 )
 
-# Define server logic required to draw a histogram
+# Define server logic
 server <- function(input, output) {
     gutenberg_book <- reactive({
         gutenberg_works(title == input$book_title) %>% # get the gutenberg id
@@ -63,10 +74,19 @@ server <- function(input, output) {
             unlist()
     })
      
-    output$password <- renderText({
+    password <- reactive({
         gutenberg_book() %>%
             sample(input$number_of_words) %>% # chose four words at random
             paste0() # drop the names
+    })
+    
+    output$password <- renderText({
+        password()
+    })
+    
+    output$password_no_spaces <- renderText({
+        password() %>%
+            str_flatten()
     })
 }
 
