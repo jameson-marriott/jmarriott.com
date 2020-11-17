@@ -14,6 +14,7 @@ library(dplyr)
 library(tidyr)
 library(tidytext)
 library(stringr)
+library(rclipboard)
 
 titles <- gutenberg_works(only_text = TRUE) %>%
     select(title) %>%
@@ -23,6 +24,8 @@ data("stop_words")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(theme = shinytheme("cerulean"),
+                
+                rclipboardSetup(),
                 
     verticalLayout(
         fluidRow(
@@ -38,11 +41,12 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
                    ),
         ),
         fluidRow(
-            column(width = 4, offset = 1,
+            column(width = 6, offset = 1,
                    selectizeInput("book_title", 
                                   "Book Title",
                                   titles,
                                   "Pride and Prejudice"),
+                   textOutput("book_length"), # this doesn't work for some reason
                    sliderInput("number_of_words",
                                "Number of words",
                                min = 1,
@@ -54,8 +58,12 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
         fluidRow(
             column(width = 6, offset = 1,
                    tags$hr(),
-                   textOutput("password_no_spaces", container = tags$p)
-            )
+                   textOutput("password", container = tags$strong)
+            ),
+        ),
+        fluidRow(
+            column(width = 6, offset = 1,
+                   uiOutput("password_no_spaces"))
         )
     )
 )
@@ -73,6 +81,14 @@ server <- function(input, output) {
             drop_na() %>% # drop anything that didn't make it through cleanly
             unlist()
     })
+    
+    # This doesn't work for some reason. 
+    book_length <- renderText({
+        length <- gutenberg_book() %>%
+            length() %>%
+            as.character()
+        paste0("Number of unique words in this book: ", length, ".")
+    })
      
     password <- reactive({
         gutenberg_book() %>%
@@ -84,9 +100,8 @@ server <- function(input, output) {
         password()
     })
     
-    output$password_no_spaces <- renderText({
-        password() %>%
-            str_flatten()
+    output$password_no_spaces <- renderUI({
+        rclipButton("clip_button", "Copy to Clipboard (No Spaces)", str_flatten(password()))
     })
 }
 
