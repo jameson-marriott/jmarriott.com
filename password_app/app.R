@@ -44,11 +44,12 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
             column(width = 6, offset = 1,
                    selectizeInput("book_title", 
                                   "Book Title",
+                                  #c("Chose one" = "", titles)), # removes the default selection, but needs error handling for the down-stream items
                                   titles,
                                   "Pride and Prejudice"),
-                   textOutput("book_length"), # this doesn't work for some reason
+                   p(textOutput("book_length")),
                    sliderInput("number_of_words",
-                               "Number of words",
+                               "Number of words to chose",
                                min = 1,
                                max = 10,
                                value = 4))
@@ -83,7 +84,7 @@ server <- function(input, output) {
     })
     
     # This doesn't work for some reason. 
-    book_length <- renderText({
+    output$book_length <- renderText({
         length <- gutenberg_book() %>%
             length() %>%
             as.character()
@@ -101,7 +102,7 @@ server <- function(input, output) {
     })
     
     output$password_no_spaces <- renderUI({
-        rclipButton("clip_button", "Copy to Clipboard (No Spaces)", str_flatten(password()))
+        rclipButton("clip_button", paste0("Copy \"", str_flatten(password()), "\""), str_flatten(password()))
     })
 }
 
