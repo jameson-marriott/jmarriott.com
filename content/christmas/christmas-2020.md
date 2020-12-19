@@ -11,7 +11,7 @@ draft = false
 
 <img src="https://jmarriott.com/images/jameson2020.jpg" alt="Jameson 2020 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="30%" height="auto"/>
 
-**Jameson (32)**: Certified six sigma black belt, cabinet painter, yard perfectionist, playhouse builder, green thumb-er, but can't get the basil to grow-er, longest daily workout streak-er, 45 pound looser, Cyrus's favorite
+**Jameson (32)**: Certified six sigma black belt, cabinet painter, yard perfectionist, playhouse builder, green thumb-er, but can't get the basil to grow-er, longest daily workout streak-er, 45 pound looser, Cyrus's favorite, [single blog post writer](https://jmarriott.com/posts/)
 
 <div style = "clear:both"></div>
 
