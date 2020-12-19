@@ -23,13 +23,13 @@ draft = false
 
 <img src="https://jmarriott.com/images/charlie2020.jpg" alt="Charlie 2020 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="30%" height="auto"/>
 
-**Charlie (5)**: Always wants to play with mom-er, misses all the time with friends-er, almost bites off his tongue-er, enthusiastic family reunion attendee, Lego master builder, face maker, BMX aspire-er
+**Charlie (5)**: Always wants to play with mom-er, misses all the time with friends-er, almost bites off his tongue-er, enthusiastic family reunion attendee, Lego master builder, face maker, BMX aspire-er, white lego Benny
 
 <div style = "clear:both"></div>
 
 <img src="https://jmarriott.com/images/jem2020.jpg" alt="Jem 2020 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="30%" height="auto"/>
 
-**Jem (3)**: "Peet-ut butt-ur" lover, singer, Charlie's copycat, bubble blower, fuzz head, buzz head, noggin bonker, evil laugher, southern gentleman, potty trainee
+**Jem (3)**: "Peet-ut butt-ur" lover, singer, Charlie's copycat, bubble blower, fuzz head, buzz head, noggin bonker, evil laugher, southern gentleman, potty trainee, blue lego Benny
 
 <div style = "clear:both"></div>
 
