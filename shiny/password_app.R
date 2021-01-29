@@ -70,7 +70,7 @@ server <- function(input, output) {
             need(input$book_title != "", "Please chose a book.")
         )
         gutenberg_works(title == input$book_title) %>% # get the gutenberg id
-            gutenberg_download() %>% 
+            gutenberg_download(mirror = "http://mirrors.xmission.com/gutenberg/") %>% 
             unnest_tokens(word, text) %>% # turn the text into a single column of words
             mutate(word = str_extract(string = word, pattern = "[[:alpha:]]+")) %>% # remove any non-alphanumeric characters. 
             select(word) %>% # get rid of the extra columns
