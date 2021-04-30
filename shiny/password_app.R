@@ -8,9 +8,13 @@ library(stringr)
 library(rclipboard)
 
 # get all the titles for the drop-down menu
-titles <- gutenberg_works(only_text = TRUE, distinct = TRUE) %>%
-    select(title) %>%
-    drop_na()
+# use the next commented lines to download the titles one time and save them, 
+# but then use the last un-commented line to load them faster.
+# titles <- gutenberg_works(only_text = TRUE, distinct = TRUE) %>%
+#      select(title) %>%
+#      drop_na()
+# write_csv(titles, "titles.csv")
+titles <- read.csv("titles.csv")
 
 # load the stop words so that we don't have to reload it later
 data("stop_words")
