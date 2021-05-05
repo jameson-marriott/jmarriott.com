@@ -72,7 +72,11 @@ server <- function(input, output, session) {
     updateSelectizeInput(session, 
                          inputId = "book_title", 
                          choices = titles$title, 
+<<<<<<< HEAD
                          selected = sample(titles$title, 1), # would be better to initially select a book with more than 0 words
+=======
+                         selected = sample(titles$title, 1), 
+>>>>>>> db8e9a22193be9f00da60d85f38aa2885f149bcc
                          server = TRUE)
     
     # get the book
