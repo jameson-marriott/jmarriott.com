@@ -39,8 +39,8 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
             column(width = 6, offset = 1,
                    selectizeInput(inputId = "book_title", 
                                   label = "Book Title",
-                                  choices = c("Chose one" = "", titles), # removes the default selection, but needs error handling for the down-stream items
-                                  selected = NULL),
+                                  choices = NULL), # uses server-side selectize
+                                  #selected = NULL),
                                   #choices = titles,
                                   #selected = "Pride and Prejudice"),
                    p(textOutput("book_length")),
@@ -66,7 +66,14 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
     )
 )
 
-server <- function(input, output) {
+server <- function(input, output, session) {
+    
+    # server-side selectize
+    updateSelectizeInput(session, 
+                         inputId = "book_title", 
+                         choices = titles$title, 
+                         selected = sample(titles$title, 1), 
+                         server = TRUE)
     
     # get the book
     gutenberg_book <- reactive({
