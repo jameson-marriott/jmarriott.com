@@ -14,7 +14,7 @@ library(rclipboard)
 #      select(title) %>%
 #      drop_na()
 # write_csv(titles, "titles.csv")
-titles <- read.csv("titles.csv")
+titles <- read.csv("titles.csv") # improvement: add authors to title
 
 # load the stop words so that we don't have to reload it later
 data("stop_words")
@@ -102,8 +102,11 @@ server <- function(input, output, session) {
      
     # generate the actual password from the book
     password <- reactive({
+        # validate(
+        #     need(input$book_title != "", "")
+        # )
         validate(
-            need(input$book_title != "", "")
+            need(length(gutenberg_book()) > 0, message = "This book didn't load properly. Please try another one.")
         )
         gutenberg_book() %>%
             sample(input$number_of_words) %>% # chose words at random
