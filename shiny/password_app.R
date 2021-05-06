@@ -11,9 +11,9 @@ library(rclipboard)
 # use the next commented lines to download the titles one time and save them, 
 # but then use the last un-commented line to load them faster.
 # titles <- gutenberg_works(only_text = TRUE, distinct = TRUE) %>%
-#      select(title) %>%
-#      drop_na()
-# write_csv(titles, "titles.csv")
+#     select(label = title, value = gutenberg_id) %>%
+#     drop_na()
+# readr::write_csv(titles, "shiny/titles.csv")
 titles <- read.csv("titles.csv") # improvement: add authors to title
 
 # load the stop words so that we don't have to reload it later
@@ -40,9 +40,6 @@ ui <- fluidPage(theme = shinytheme("cerulean"),
                    selectizeInput(inputId = "book_title", 
                                   label = "Book Title",
                                   choices = NULL), # uses server-side selectize
-                                  #selected = NULL),
-                                  #choices = titles,
-                                  #selected = "Pride and Prejudice"),
                    p(textOutput("book_length")),
                    sliderInput("number_of_words",
                                "Number of words to chose",
@@ -71,8 +68,8 @@ server <- function(input, output, session) {
     # server-side selectize
     updateSelectizeInput(session, 
                          inputId = "book_title", 
-                         choices = titles$title, 
-                         selected = sample(titles$title, 1), # would be better to initially select a book with more than 0 words
+                         choices = titles, 
+                         selected = sample(titles$value, 1),
                          server = TRUE)
     
     # get the book
@@ -80,7 +77,8 @@ server <- function(input, output, session) {
         validate(
             need(input$book_title != "", "Please chose a book.")
         )
-        gutenberg_works(title == input$book_title) %>% # get the gutenberg id
+        #gutenberg_works(title == input$book_title) %>% # get the gutenberg id
+        input$book_title %>%
             gutenberg_download(mirror = "http://mirrors.xmission.com/gutenberg/") %>% 
             unnest_tokens(word, text) %>% # turn the text into a single column of words
             mutate(word = str_extract(string = word, pattern = "[[:alpha:]]+")) %>% # remove any non-alphanumeric characters. 
@@ -102,9 +100,6 @@ server <- function(input, output, session) {
      
     # generate the actual password from the book
     password <- reactive({
-        # validate(
-        #     need(input$book_title != "", "")
-        # )
         validate(
             need(length(gutenberg_book()) > 0, message = "This book didn't load properly. Please try another one.")
         )
