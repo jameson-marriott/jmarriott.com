@@ -1,11 +1,11 @@
-\+++
++++
 title = "2021 Christmas Newsletter"
 slug = "2021 Christmas Newsletter"
-date = "2021-12-06"
+date = "2021-12-12"
 tags = "Christmas"
-categories = \[]
+categories = []
 draft = false
-\+++
++++
 
 <img src="https://jmarriott.com/images/snowflake-background.png" width="100%" height="auto" style="position:absolute; top:0px; left:0px; z-index:-1; opacity: 0.2;">
 
