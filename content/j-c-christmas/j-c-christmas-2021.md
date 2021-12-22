@@ -36,7 +36,8 @@ draft = false
 **Stasia (31)**: RS Ministering Secretary, busy mom, cook, cleaner, St. Augustine family tripper.
 
 **Brian (38)**: Elders Quorum President, hockey goalie, Kuwait, Germany and Illinois tripper.
-Hannah (7): Daily Book of Mormon reader, sewer, creative crafter, ballerina, 4 teeth loser, eager homeschooler.
+
+**Hannah (7)**: Daily Book of Mormon reader, sewer, creative crafter, ballerina, 4 teeth loser, eager homeschooler.
 
 **Sonja (5)**: Jump roper, family’s official love note maker, reader, ballerina, sweet and original prayers giver, shell collector.
 
@@ -55,7 +56,8 @@ Hannah (7): Daily Book of Mormon reader, sewer, creative crafter, ballerina, 4 t
 **Anson (6)**: Spanish immersion student, 1st grader, Articles of Faith memorizer, zucchini grower, St. George biker, kayaker, basil eater, 5k racer, Alaskan salmon fisher, downhill skier
 
 **Emery (4)**: Articles of Faith memorizer, pumpkin grower, St. George biker, ATV rider, horse rider, basil eater, Wolfy leaver, giggler, pinata smasher, downhill skier
-Isaak (2): Nebulizer user, stuffed animal wrestler, Dad hugger, best eater, enthusiastic amen-er, magnet builder, Laurel holder
+
+**Isaak (2)**: Nebulizer user, stuffed animal wrestler, Dad hugger, best eater, enthusiastic amen-er, magnet builder, Laurel holder
 
 **Laurel (0)**: 7/11 slurpee girl, tongue sucker, Anson look alike, good sleeper, even better napper, always contenter, smiler, favorite
 
@@ -73,7 +75,7 @@ Isaak (2): Nebulizer user, stuffed animal wrestler, Dad hugger, best eater, enth
 
 <div style = "clear:both"></div>
 
-<img src="https://jmarriott.com/images/bp2021.jpg" alt="Peter and Beth Family 2021 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="100%" height="auto"/>
+<img src="https://jmarriott.com/images/pb2021.jpg" alt="Peter and Beth Family 2021 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="100%" height="auto"/>
 
 **Peter (25)**: BYU grad, big boy mover, speedy transcriber, Beth’s willing servant, Catan lover, new hairstyle trier, Dwight Schrute impersonator, wanna-be homeowner, Lord of the Rings marathoner, chess enthusiast, cryptocurrency researcher.
 
