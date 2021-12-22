@@ -4,7 +4,7 @@ slug = "J C 2021 Christmas Newsletter"
 date = "2021-12-21"
 tags = "Jim and Carolyn Christmas"
 categories = []
-draft = true
+draft = false
 +++
 
 <img src="https://jmarriott.com/images/snowflake-background.png" width="100%" height="auto" style="position:absolute; top:0px; left:0px; z-index:-1; opacity: 0.2;">
