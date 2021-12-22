@@ -89,6 +89,6 @@ Isaak (2): Nebulizer user, stuffed animal wrestler, Dad hugger, best eater, enth
 
 <div style = "clear:both"></div>
 
-<img src="https://jmarriott.com/images/kf2021.jpg" alt="Lizzy 2021 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="100%" height="auto"/>
+<img src="https://jmarriott.com/images/lizzy2021.jpg" alt="Lizzy 2021 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="100%" height="auto"/>
 
 **Lizzy (19)**: BYU student, restaurant manager, job quitter, better job getter, 10ish states in 12 days roadtripper, first time outdoor rock climber, jet skier, ATVer, boulderer, novice mountain biker, Zions hiker, Yellowstone visitor, Covid survivor, still-can’t-smeller, week long babysitter, Catan loser, BYU games jynxer, last single Marriott ;)
