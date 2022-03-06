@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/WCQI"
+  to = "https://jameson-marriott.shinyapps.io/WCQI-2022"
+  status = 301
+  force = false
