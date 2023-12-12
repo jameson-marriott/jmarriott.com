@@ -11,7 +11,7 @@ draft = false
 
 <img src="https://jmarriott.com/images/jameson2023.jpg" alt="Jameson 2023 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="30%" height="auto"/>
 
-**Jameson (35)**: The Wave hiker, classic literature listener, work financial competition winner, Florida visitor, ocean-to-ocean traveler, almost Timp summiteer, emergency room goer
+**Jameson (35)**: The Wave hiker, [classic literature listener](https://jmarriott.com/posts/books-read-2023/), work financial competition winner, Florida visitor, ocean-to-ocean traveler, almost Timp summiteer, emergency room goer
 
 <div style = "clear:both"></div>
 

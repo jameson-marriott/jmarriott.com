@@ -2,8 +2,8 @@
 title = "Books I Read In 2023"
 slug = "books-read-2023"
 date = "2023-12-11"
-tags = "Books"
-categories = []
+tags = ""
+categories = ["Books"]
 draft = false
 +++
 
