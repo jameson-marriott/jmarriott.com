@@ -1,0 +1,70 @@
+---
+title: "Evenly Spaced Month Charts"
+slug: "evenly-spaced-month-charts"
+author: "Jameson Marriott"
+date: "2024-04-25"
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+    dev: "svg"
+draft: FALSE
+tags:
+  - R
+---
+
+I recently noticed that [ggplot2](https:://ggplot2.tidyverse.org) spaces date axes literally even when grouped by month. I've been using [ggplot2](https:://ggplot2.tidyverse.org) extensively for years and I don't remember noticing before, so this is not really a big deal, but now that I know it bugs me a lot. Take a look below. 
+
+As always, let's load the `tidyverse`.
+
+```{r setup, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+Next, we need some example data. Nothing fancy, just something to plot as an example. 
+
+```{r data}
+month_data <- tibble(dates = seq(ymd("2023-11-01"), ymd("2024-04-30"), by = "day"),
+                     data = sample(1:1e3, 182)) |>
+  mutate(month = floor_date(dates, "month")) |>
+  group_by(month) |>
+  summarise(monthly_mean = mean(data))
+
+month_data
+```
+
+Now let me show you how the distance between the months is not equal. 
+
+```{r plot}
+month_data |>
+  ggplot(aes(x = month, y = monthly_mean)) +
+  geom_col(width = 29) +
+  ggtitle("The Months Are Not Spaced Evenly!") +
+  # add the year to the first month plotted in each year
+  scale_x_date(labels = scales::label_date_short())
+```
+
+How frustrating! The fix is not that hard, though. We are going to change the date axis to factors with a neat little trick. We're going to hack the `label_date_short()` function to change the dates to text and then change the dates to factors. Here we go. 
+
+```{r fix_the_data}
+# get the label_date_short() function
+prettify_dates <- scales::label_date_short()
+
+# we use the new function we made and make the dates factors so that they sort 
+# correctly. 
+new_month_data <- month_data |>
+  mutate(pretty_month = prettify_dates(month),
+         pretty_month = as_factor(pretty_month))
+
+new_month_data
+```
+
+Now all we have to do is drop the date scale and let `geom_col()` chose its own width. 
+
+```{r better_plot}
+new_month_data |>
+  ggplot(aes(x = pretty_month, y = monthly_mean)) +
+  geom_col() +
+  ggtitle("The Spacing Is Even Now!")
+```
+
