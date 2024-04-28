@@ -7,7 +7,7 @@ output:
   blogdown::html_page:
     toc: true
     fig_width: 6
-    dev: "svg"
+    dev: "png"
 draft: FALSE
 tags:
   - R
@@ -29,12 +29,12 @@ month_data</code></pre>
 <pre><code>## # A tibble: 6 × 2
 ##   month      monthly_mean
 ##   &lt;date&gt;            &lt;dbl&gt;
-## 1 2023-11-01         588.
-## 2 2023-12-01         473 
-## 3 2024-01-01         475.
-## 4 2024-02-01         405.
-## 5 2024-03-01         570.
-## 6 2024-04-01         417.</code></pre>
+## 1 2023-11-01         572.
+## 2 2023-12-01         601.
+## 3 2024-01-01         471.
+## 4 2024-02-01         562.
+## 5 2024-03-01         487.
+## 6 2024-04-01         438.</code></pre>
 <p>Now let me show you how the distance between the months is not equal.</p>
 <pre class="r"><code>month_data |&gt;
   ggplot(aes(x = month, y = monthly_mean)) +
@@ -42,7 +42,7 @@ month_data</code></pre>
   ggtitle(&quot;The Months Are Not Spaced Evenly!&quot;) +
   # add the year to the first month plotted in each year
   scale_x_date(labels = scales::label_date_short())</code></pre>
-<p><img src="/posts/2024-04-28-evenly-spaced-month-charts_files/figure-html/plot-1.svg" width="576" /></p>
+<p><img src="/posts/2024-04-28-evenly-spaced-month-charts_files/figure-html/plot-1.png" width="576" /></p>
 <p>How frustrating! The fix is not that hard, though. We are going to change the date axis to factors with a neat little trick. We’re going to hack the <code>label_date_short()</code> function to change the dates to text and then change the dates to factors. Here we go.</p>
 <pre class="r"><code># get the label_date_short() function
 prettify_dates &lt;- scales::label_date_short()
@@ -57,15 +57,15 @@ new_month_data</code></pre>
 <pre><code>## # A tibble: 6 × 3
 ##   month      monthly_mean pretty_month
 ##   &lt;date&gt;            &lt;dbl&gt; &lt;fct&gt;       
-## 1 2023-11-01         588. &quot;Nov\n2023&quot; 
-## 2 2023-12-01         473  &quot;Dec&quot;       
-## 3 2024-01-01         475. &quot;Jan\n2024&quot; 
-## 4 2024-02-01         405. &quot;Feb&quot;       
-## 5 2024-03-01         570. &quot;Mar&quot;       
-## 6 2024-04-01         417. &quot;Apr&quot;</code></pre>
+## 1 2023-11-01         572. &quot;Nov\n2023&quot; 
+## 2 2023-12-01         601. &quot;Dec&quot;       
+## 3 2024-01-01         471. &quot;Jan\n2024&quot; 
+## 4 2024-02-01         562. &quot;Feb&quot;       
+## 5 2024-03-01         487. &quot;Mar&quot;       
+## 6 2024-04-01         438. &quot;Apr&quot;</code></pre>
 <p>Now all we have to do is drop the date scale and let <code>geom_col()</code> chose its own width.</p>
 <pre class="r"><code>new_month_data |&gt;
   ggplot(aes(x = pretty_month, y = monthly_mean)) +
   geom_col() +
   ggtitle(&quot;The Spacing Is Even Now!&quot;)</code></pre>
-<p><img src="/posts/2024-04-28-evenly-spaced-month-charts_files/figure-html/better_plot-1.svg" width="576" /></p>
+<p><img src="/posts/2024-04-28-evenly-spaced-month-charts_files/figure-html/better_plot-1.png" width="576" /></p>
