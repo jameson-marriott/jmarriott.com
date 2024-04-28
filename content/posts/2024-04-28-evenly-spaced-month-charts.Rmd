@@ -2,7 +2,7 @@
 title: "Evenly Spaced Month Charts"
 slug: "evenly-spaced-month-charts"
 author: "Jameson Marriott"
-date: "2024-04-25"
+date: "2024-04-28"
 output:
   blogdown::html_page:
     toc: true
