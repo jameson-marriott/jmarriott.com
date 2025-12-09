@@ -23,7 +23,7 @@ draft = false
 
 <img src="https://jmarriott.com/images/charlie2025.jpg" alt="Charlie 2025 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="30%" height="auto"/>
 
-**Charlie (10)**: book report writer, gets all his school work done by himselfer, scooter kamikaze, first stitches getter, suburban rider, new friends gallery maker, eat ten tacos in one nighter (taco Tuesday enforcer), bossy oldest child 
+**Charlie (10)**: book report writer, gets all his school work done by himselfer, scooter kamikaze, first stitches getter, suburban rider, new friends maker, eat ten tacos in one nighter (taco Tuesday enforcer), bossy oldest child 
 
 <div style = "clear:both"></div>
 
@@ -42,7 +42,6 @@ draft = false
 <img src="https://jmarriott.com/images/walter2025.jpg" alt="Cyrus 2025 Christmas Picture" class = "float-left" style = "padding-right: 2%" width="30%" height="auto"/>
 
 **Walter (3)**: still potty training refuser, being left behind hater, mischief maker, can't be left aloner, dad's face breaker, toy stealer, strider rider, only has one volume-er, roarer
-
 
 <div style = "clear:both"></div>
 
